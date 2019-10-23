@@ -10,14 +10,14 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.totvs.tj.tcc.app.AbrirContaCommand;
-import com.totvs.tj.tcc.app.ContaApplicationService;
-import com.totvs.tj.tcc.app.SuspenderContaCommand;
+import com.totvs.tj.tcc.app.conta.AbrirContaCommand;
+import com.totvs.tj.tcc.app.conta.ContaApplicationService;
+import com.totvs.tj.tcc.app.conta.SuspenderContaCommand;
 import com.totvs.tj.tcc.domain.conta.Conta;
 import com.totvs.tj.tcc.domain.conta.ContaId;
 import com.totvs.tj.tcc.domain.conta.ContaRepository;
-import com.totvs.tj.tcc.domain.conta.EmpresaId;
 import com.totvs.tj.tcc.domain.conta.ResponsavelId;
+import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 
 public class ContaTest {
 
@@ -105,6 +105,29 @@ public class ContaTest {
         // THEN
         assertTrue("Não deve chegar aqui...", false);
     }
+    
+    
+    @Test()
+    public void validaCriacaoContaComSaldoZero() throws Exception {
+        
+        // GIVEN
+        ContaRepository repository = new ContaRepositoryMock();
+        ContaApplicationService service = new ContaApplicationService(repository);
+
+        AbrirContaCommand cmd = AbrirContaCommand.builder()
+                .empresa(idEmpresa)
+                .responsavel(idResponsavel)
+                .build();
+
+        // WHEN
+        ContaId idConta = service.handle(cmd);
+
+        // THEN
+        assertTrue(repository.getOne(idConta).getSaldo() == 0);
+        
+        
+    }
+    
 
     static class ContaRepositoryMock implements ContaRepository {
 

@@ -1,4 +1,4 @@
-package com.totvs.tj.tcc.app;
+package com.totvs.tj.tcc.app.conta;
 
 import com.totvs.tj.tcc.domain.conta.ContaId;
 

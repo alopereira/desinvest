@@ -1,4 +1,4 @@
-package com.totvs.tj.tcc.domain.conta;
+package com.totvs.tj.tcc.domain.empresa;
 
 import java.util.UUID;
 

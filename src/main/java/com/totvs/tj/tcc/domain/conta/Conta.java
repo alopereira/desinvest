@@ -4,6 +4,8 @@ import static com.totvs.tj.tcc.domain.conta.Conta.Situacao.ABERTO;
 import static com.totvs.tj.tcc.domain.conta.Conta.Situacao.SUSPENSO;
 import static lombok.AccessLevel.PRIVATE;
 
+import com.totvs.tj.tcc.domain.empresa.EmpresaId;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +24,10 @@ public class Conta {
     private ResponsavelId responsavel;
 
     private Situacao situacao;
+    
+    private double saldo;
+    
+    private double limite;
     
     public void suspender() {
         situacao = SUSPENSO;
