@@ -34,7 +34,7 @@ public class ContaTest {
         Conta conta = Conta.builder()
                 .id(idConta)
                 .empresa(idEmpresa)
-                .responsavel(idResponsavel)
+                .responsavel(idResponsavel) 
             .build();
 
         // THEN
