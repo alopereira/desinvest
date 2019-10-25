@@ -180,6 +180,33 @@ public class ContaTest {
         
         assertTrue(conta.getLimite() == 15000);
     }
+    
+    @Test
+    public void validaSolicitacaoCreditoEmergencialAte50PorCento() {
+        
+        // GIVEN
+        Empresa empresa = Empresa.builder()
+                .id(idEmpresa)
+                .valor(15000)
+                .qtdFuncionarios(500)
+                .build();    
+
+        Responsavel responsavel = Responsavel.builder()
+                .id(idResponsavel)
+                .supervisor("vitor.barba@totvs.com.br")
+                .build();        
+        
+        Conta conta = Conta.builder()
+                .id(idConta)
+                .responsavel(responsavel)
+                .empresa(empresa)
+                .build();
+        
+        double valor = 9750;
+        
+        //THEN
+        assertTrue(conta.solicitarCreditoEmergencial(valor));
+    }
 
     static class ContaRepositoryMock implements ContaRepository {
 
