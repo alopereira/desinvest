@@ -207,6 +207,33 @@ public class ContaTest {
         //THEN
         assertTrue(conta.solicitarCreditoEmergencial(valor));
     }
+    
+    @Test
+    public void validaSolicitacaoCreditoEmergencialAcimaDe50PorCento() {
+        
+        // GIVEN
+        Empresa empresa = Empresa.builder()
+                .id(idEmpresa)
+                .valor(15000)
+                .qtdFuncionarios(500)
+                .build();    
+
+        Responsavel responsavel = Responsavel.builder()
+                .id(idResponsavel)
+                .supervisor("vitor.barba@totvs.com.br")
+                .build();        
+        
+        Conta conta = Conta.builder()
+                .id(idConta)
+                .responsavel(responsavel)
+                .empresa(empresa)
+                .build();
+        
+        double valor = 10000;
+        
+        //THEN
+        assertFalse(conta.solicitarCreditoEmergencial(valor));
+    }
 
     static class ContaRepositoryMock implements ContaRepository {
 
