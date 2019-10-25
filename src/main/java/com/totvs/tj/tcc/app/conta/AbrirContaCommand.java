@@ -13,5 +13,5 @@ public class AbrirContaCommand {
     private EmpresaId empresa;
     
     private ResponsavelId responsavel;
-    
+    // teste vitor git
 }
