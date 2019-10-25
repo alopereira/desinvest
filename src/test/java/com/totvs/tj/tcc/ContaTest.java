@@ -34,7 +34,7 @@ public class ContaTest {
         Conta conta = Conta.builder()
                 .id(idConta)
                 .empresa(idEmpresa)
-                .responsavel(idResponsavel)
+                .responsavel(idResponsavel) 
             .build();
 
         // THEN
@@ -123,11 +123,9 @@ public class ContaTest {
         ContaId idConta = service.handle(cmd);
 
         // THEN
-        assertTrue(repository.getOne(idConta).getSaldo() == 0);
+        assertTrue(repository.getOne(idConta).getSaldo() == 0);       
         
-        
-    }
-    
+    }    
 
     static class ContaRepositoryMock implements ContaRepository {
 
