@@ -5,6 +5,7 @@ import static com.totvs.tj.tcc.domain.conta.Conta.Situacao.SUSPENSO;
 import static lombok.AccessLevel.PRIVATE;
 
 import com.totvs.tj.tcc.domain.empresa.EmpresaId;
+import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

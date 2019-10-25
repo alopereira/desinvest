@@ -1,6 +1,6 @@
 package com.totvs.tj.tcc.app.empresa;
 
-import com.totvs.tj.tcc.domain.conta.ResponsavelId;
+import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 
 import lombok.Builder;
 import lombok.Data;

@@ -16,8 +16,8 @@ import com.totvs.tj.tcc.app.conta.SuspenderContaCommand;
 import com.totvs.tj.tcc.domain.conta.Conta;
 import com.totvs.tj.tcc.domain.conta.ContaId;
 import com.totvs.tj.tcc.domain.conta.ContaRepository;
-import com.totvs.tj.tcc.domain.conta.ResponsavelId;
 import com.totvs.tj.tcc.domain.empresa.EmpresaId;
+import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 
 public class ContaTest {
 

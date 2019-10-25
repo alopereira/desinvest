@@ -1,4 +1,4 @@
-package com.totvs.tj.tcc.domain.conta;
+package com.totvs.tj.tcc.domain.responsavel;
 
 import java.util.UUID;
 
@@ -22,5 +22,5 @@ public class ResponsavelId {
     public static ResponsavelId generate() {
         return ResponsavelId.from(UUID.randomUUID().toString());
     }
-    
+
 }
