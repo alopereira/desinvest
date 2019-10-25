@@ -123,11 +123,9 @@ public class ContaTest {
         ContaId idConta = service.handle(cmd);
 
         // THEN
-        assertTrue(repository.getOne(idConta).getSaldo() == 0);
+        assertTrue(repository.getOne(idConta).getSaldo() == 0);       
         
-        
-    }
-    
+    }    
 
     static class ContaRepositoryMock implements ContaRepository {
 
