@@ -59,8 +59,8 @@ public class ContaTest {
         ContaApplicationService service = new ContaApplicationService(repository);
 
         AbrirContaCommand cmd = AbrirContaCommand.builder()
-                .empresa(Empresa.builder().id(idEmpresa).build())
-                .responsavel(Responsavel.builder().id(idResponsavel).build())
+                .empresaId(idEmpresa)
+                .responsavelId(idResponsavel)
                 .build();
 
         // WHEN
@@ -116,8 +116,8 @@ public class ContaTest {
         ContaApplicationService service = new ContaApplicationService(repository);
 
         AbrirContaCommand cmd = AbrirContaCommand.builder()
-                .empresa(Empresa.builder().id(idEmpresa).build())
-                .responsavel(Responsavel.builder().id(idResponsavel).build())
+                .empresaId(idEmpresa)
+                .responsavelId(idResponsavel)
                 .build();
 
         // WHEN
