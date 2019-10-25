@@ -154,6 +154,32 @@ public class ContaTest {
         assertTrue(conta.getLimite() == 6500);
 
     }
+    
+    @Test()
+    public void validaLimiteMaximoInicialdaConta() throws Exception {
+
+        // GIVEN
+        Empresa empresa = Empresa.builder()
+                .id(idEmpresa)
+                .valor(150000)
+                .qtdFuncionarios(50000)
+                .build();
+
+        Responsavel responsavel = Responsavel.builder()
+                .id(idResponsavel)
+                .supervisor("vitor.barba@totvs.com.br")
+                .build();
+        
+        
+        Conta conta = Conta.builder()
+                .id(idConta)
+                .responsavel(responsavel)
+                .empresa(empresa)
+                .build();
+                
+        
+        assertTrue(conta.getLimite() == 15000);
+    }
 
     static class ContaRepositoryMock implements ContaRepository {
 
