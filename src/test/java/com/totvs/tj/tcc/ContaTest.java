@@ -16,6 +16,8 @@ import com.totvs.tj.tcc.app.conta.SuspenderContaCommand;
 import com.totvs.tj.tcc.domain.conta.Conta;
 import com.totvs.tj.tcc.domain.conta.ContaId;
 import com.totvs.tj.tcc.domain.conta.ContaRepository;
+import com.totvs.tj.tcc.domain.conta.Movimentacao;
+import com.totvs.tj.tcc.domain.conta.MovimentacaoSituacao;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
 import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 import com.totvs.tj.tcc.domain.responsavel.Responsavel;
@@ -182,7 +184,7 @@ public class ContaTest {
     }
     
     @Test
-    public void validaSolicitacaoCreditoEmergencialAte50PorCento() {
+    public void aoSolicitarCreditoEmergencialAte50PorCento() {
         
         // GIVEN
         Empresa empresa = Empresa.builder()
@@ -205,11 +207,14 @@ public class ContaTest {
         double valor = 9750;
         
         //THEN
-        assertTrue(conta.solicitarCreditoEmergencial(valor));
+        Movimentacao movimentacao;
+        movimentacao = conta.solicitarCreditoEmergencial(valor);
+        
+        assertTrue(movimentacao.getSituacao().equals(MovimentacaoSituacao.APROVADO));
     }
     
     @Test
-    public void validaSolicitacaoCreditoEmergencialAcimaDe50PorCento() {
+    public void aoSolicitarCreditoEmergencialAcimaDe50PorCento() {
         
         // GIVEN
         Empresa empresa = Empresa.builder()
@@ -232,7 +237,10 @@ public class ContaTest {
         double valor = 10000;
         
         //THEN
-        assertFalse(conta.solicitarCreditoEmergencial(valor));
+        Movimentacao movimentacao;
+        movimentacao = conta.solicitarCreditoEmergencial(valor);
+        
+        assertTrue(movimentacao.getSituacao().equals(MovimentacaoSituacao.AGUARDANDO_APROVACAO));
     }
 
     static class ContaRepositoryMock implements ContaRepository {

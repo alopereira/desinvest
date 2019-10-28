@@ -79,18 +79,43 @@ public class Conta {
         return zz;
     }
 
-    public boolean solicitarCreditoEmergencial(double valor) {
+    public Movimentacao solicitarCreditoEmergencial(double valor) {
 
+        Movimentacao movimentacao = null;
         double limiteMaximo = this.calculaLimiteMaximoParaCreditoEmergencial();
-        boolean aprovado = false;
         
-        if (valor <= limiteMaximo) {
-            this.limite = valor;
-            this.solicitacaoAumentoCredito = this.solicitacaoAumentoCredito + 1;
-            aprovado = true;
+        if (this.permiteSolicitarCreditoEmergencial() == false) {
+            movimentacao = Movimentacao.builder()
+                    .id(MovimentacaoId.generate())
+                    .contaId(this.id)
+                    .situacao(MovimentacaoSituacao.REPROVADO)
+                    .motivo(MovimentacaoMotivo.LIMITE_JA_SOLICITADO)
+                    .build();
+            
+            return movimentacao;
+        } 
+        
+        if (valor > limiteMaximo) {
+            movimentacao = Movimentacao.builder()
+                    .id(MovimentacaoId.generate())
+                    .contaId(this.id)
+                    .situacao(MovimentacaoSituacao.AGUARDANDO_APROVACAO)
+                    .motivo(MovimentacaoMotivo.LIMITE_ACIMA_MAXIMO)
+                    .build();
+            
+            return movimentacao;
         }
         
-        return aprovado;
+        movimentacao = Movimentacao.builder()
+                .id(MovimentacaoId.generate())
+                .contaId(this.id)
+                .situacao(MovimentacaoSituacao.APROVADO)
+                .build();
+        
+        this.limite = valor;
+        this.solicitacaoAumentoCredito = this.solicitacaoAumentoCredito + 1;
+               
+        return movimentacao;
     }
 
     private double calculaLimiteMaximoParaCreditoEmergencial() {
@@ -98,6 +123,12 @@ public class Conta {
         double limiteMaximo = this.limite + (this.limite * 0.5);
 
         return limiteMaximo;
+    }
+    
+    private boolean permiteSolicitarCreditoEmergencial() {
+        
+        return this.solicitacaoAumentoCredito == 0;
+        
     }
     
 }
