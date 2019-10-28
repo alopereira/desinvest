@@ -71,68 +71,56 @@ public class Conta {
 
     protected double calculaLimiteAbertura() {
 
-        double xx = this.empresa.getValor() * 0.1;
-        double yy = this.empresa.getQtdFuncionarios() * 10;
+        double valorDaEmpresaPerc = this.empresa.getValor() * 0.1;
+        double qtdFuncionariosEmpresa = this.empresa.getQtdFuncionarios() * 10;
 
-        double zz = xx + yy;
+        double valorLimiteConta = valorDaEmpresaPerc + qtdFuncionariosEmpresa;
 
-        if (zz > 15000) {
-            zz = 15000;
+        if (valorLimiteConta > 15000) {
+            valorLimiteConta = 15000;
         }
 
-        return zz;
+        return valorLimiteConta;
     }
 
-    public Movimentacao solicitarCreditoEmergencial(double valor) {
-
-        Movimentacao movimentacao = null;
-        double limiteMaximo = this.calculaLimiteMaximoParaCreditoEmergencial();
-        
-        if (this.permiteSolicitarCreditoEmergencial() == false) {
-            movimentacao = Movimentacao.builder()
-                    .id(MovimentacaoId.generate())
-                    .contaId(this.id)
-                    .situacao(MovimentacaoSituacao.REPROVADO)
-                    .motivoRecusa(MovimentacaoMotivoRecusa.LIMITE_JA_SOLICITADO)
-                    .build();
-            
-            return movimentacao;
-        } 
-        
-        if (valor > limiteMaximo) {
-            movimentacao = Movimentacao.builder()
-                    .id(MovimentacaoId.generate())
-                    .contaId(this.id)
-                    .situacao(MovimentacaoSituacao.AGUARDANDO_APROVACAO)
-                    .motivoRecusa(MovimentacaoMotivoRecusa.LIMITE_ACIMA_MAXIMO)
-                    .build();
-            
-            return movimentacao;
-        }
-        
-        movimentacao = Movimentacao.builder()
-                .id(MovimentacaoId.generate())
-                .contaId(this.id)
-                .situacao(MovimentacaoSituacao.APROVADO)
-                .build();
-        
-        this.limite = valor;
-        this.solicitacaoAumentoCredito = this.solicitacaoAumentoCredito + 1;
-               
-        return movimentacao;
-    }
-
-    private double calculaLimiteMaximoParaCreditoEmergencial() {
+    public double calculaLimiteMaximoParaCreditoEmergencial() {
 
         double limiteMaximo = this.limite + (this.limite * 0.5);
 
         return limiteMaximo;
     }
     
-    private boolean permiteSolicitarCreditoEmergencial() {
+    public boolean permiteSolicitarCreditoEmergencial() {
         
         return this.solicitacaoAumentoCredito == 0;
         
+    }
+    
+    public Movimentacao solicitaCreditoEmergencial(double novoLimite) {
+        
+        MovimentacaoSituacao situacao = MovimentacaoSituacao.APROVADO;
+        MovimentacaoMotivoRecusa motivoRecusa = null;
+        
+        MovimentacaoId idMovimentacao = MovimentacaoId.generate();
+        
+        if (this.permiteSolicitarCreditoEmergencial() == false) {
+            situacao = MovimentacaoSituacao.REPROVADO;
+            motivoRecusa = MovimentacaoMotivoRecusa.LIMITE_JA_SOLICITADO;
+        } else if (novoLimite > this.calculaLimiteMaximoParaCreditoEmergencial()) {
+            situacao = MovimentacaoSituacao.AGUARDANDO_APROVACAO;
+            motivoRecusa = MovimentacaoMotivoRecusa.LIMITE_ACIMA_MAXIMO;
+        } else {
+            this.limite = novoLimite;
+        }
+        
+        this.solicitacaoAumentoCredito = this.solicitacaoAumentoCredito + 1;
+        
+        return Movimentacao.builder()
+                .id(idMovimentacao)
+                .contaId(this.id)
+                .situacao(situacao)
+                .motivoRecusa(motivoRecusa)
+                .build();
     }
     
 }

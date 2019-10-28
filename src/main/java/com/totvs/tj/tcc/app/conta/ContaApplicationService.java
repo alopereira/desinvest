@@ -12,15 +12,22 @@ import com.totvs.tj.tcc.domain.responsavel.Responsavel;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelRepository;
 
+import lombok.Builder;
+
 @Service
+@Builder
 public class ContaApplicationService {
     
-    private ContaRepository repository;
+    private ContaRepository contaRepository;
     private EmpresaRepository empresaRepository;
     private ResponsavelRepository responsavelRepository;
     
-    public ContaApplicationService(ContaRepository repository) {
-        this.repository = repository;
+    public ContaApplicationService(ContaRepository contaRepository,
+            EmpresaRepository empresaRepository,
+            ResponsavelRepository responsavelRepository) {
+        this.contaRepository = contaRepository;
+        this.empresaRepository = empresaRepository;
+        this.responsavelRepository = responsavelRepository;
     }
     
     public ContaId handle(AbrirContaCommand cmd) {
@@ -33,7 +40,7 @@ public class ContaApplicationService {
                 .responsavel(getResponsavelById(cmd.getResponsavelId()))
             .build();
         
-        repository.save(conta);
+        contaRepository.save(conta);
         
         return idConta; 
     }
@@ -48,11 +55,11 @@ public class ContaApplicationService {
     
     public void handle(SuspenderContaCommand cmd) {
         
-        Conta conta = repository.getOne(cmd.getConta());
+        Conta conta = contaRepository.getOne(cmd.getConta());
         
         conta.suspender();
         
-        repository.save(conta);
+        contaRepository.save(conta);
     }
     
 }

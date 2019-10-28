@@ -13,15 +13,21 @@ import org.junit.Test;
 import com.totvs.tj.tcc.app.conta.AbrirContaCommand;
 import com.totvs.tj.tcc.app.conta.ContaApplicationService;
 import com.totvs.tj.tcc.app.conta.SuspenderContaCommand;
+import com.totvs.tj.tcc.app.movimentacao.MovimentacaoApplicationService;
+import com.totvs.tj.tcc.app.movimentacao.SolicitaCreditoEmergencialCommand;
 import com.totvs.tj.tcc.domain.conta.Conta;
 import com.totvs.tj.tcc.domain.conta.ContaId;
 import com.totvs.tj.tcc.domain.conta.ContaRepository;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
 import com.totvs.tj.tcc.domain.empresa.EmpresaId;
+import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
 import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
+import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
+import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoRepository;
 import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoSituacao;
 import com.totvs.tj.tcc.domain.responsavel.Responsavel;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
+import com.totvs.tj.tcc.domain.responsavel.ResponsavelRepository;
 
 public class ContaTest {
 
@@ -56,9 +62,22 @@ public class ContaTest {
     @Test
     public void aoSolicitarAberturaConta() throws Exception {
 
+        ContaRepository contaRepository = new ContaRepositoryMock();
+        ResponsavelRepository responsavelRepository = new ResponsavelRepositoryMock();
+        EmpresaRepository empresaRepository = new EmpresaRepositoryMock();
+        
+        responsavelRepository.save(Responsavel.builder().id(idResponsavel).build());
+        empresaRepository.save(Empresa.builder().id(idEmpresa).build());
+        
+        
         // GIVEN
-        ContaRepository repository = new ContaRepositoryMock();
-        ContaApplicationService service = new ContaApplicationService(repository);
+        ContaApplicationService service = ContaApplicationService.builder()
+                .contaRepository(contaRepository)
+                .responsavelRepository(responsavelRepository)
+                .empresaRepository(empresaRepository)
+                .build();
+        
+        
 
         AbrirContaCommand cmd = AbrirContaCommand.builder()
                 .empresaId(idEmpresa)
@@ -77,11 +96,16 @@ public class ContaTest {
 
         // GIVEN
         SuspenderContaCommand cmd = SuspenderContaCommand.from(idConta);
+        
+        ContaRepository contaRepository = new ContaRepositoryMock();
 
-        ContaRepository repository = new ContaRepositoryMock();
-        ContaApplicationService service = new ContaApplicationService(repository);
+        ContaApplicationService service = ContaApplicationService.builder()
+                .contaRepository(contaRepository)
+                .responsavelRepository(new ResponsavelRepositoryMock())
+                .empresaRepository(new EmpresaRepositoryMock())
+                .build();
 
-        repository.save(Conta.builder()
+        contaRepository.save(Conta.builder()
                 .id(idConta)
                 .empresa(Empresa.builder().id(idEmpresa).build())
                 .responsavel(Responsavel.builder().id(idResponsavel).build())
@@ -91,7 +115,7 @@ public class ContaTest {
         service.handle(cmd);
 
         // THEN
-        assertFalse(repository.getOne(idConta).isDisponivel());
+        assertFalse(contaRepository.getOne(idConta).isDisponivel());
     }
 
     @Test(expected = NullPointerException.class)
@@ -100,9 +124,11 @@ public class ContaTest {
         // GIVEN
         SuspenderContaCommand cmd = SuspenderContaCommand.from(idConta);
 
-        ContaRepository repository = new ContaRepositoryMock();
-        ContaApplicationService service = new ContaApplicationService(repository);
-
+        ContaApplicationService service = ContaApplicationService.builder()
+                .contaRepository(new ContaRepositoryMock())
+                .responsavelRepository(new ResponsavelRepositoryMock())
+                .empresaRepository(new EmpresaRepositoryMock())
+                .build();
         // WHEN
         service.handle(cmd);
 
@@ -112,11 +138,22 @@ public class ContaTest {
 
     @Test()
     public void validaCriacaoContaComSaldoZero() throws Exception {
-
+        
         // GIVEN
-        ContaRepository repository = new ContaRepositoryMock();
-        ContaApplicationService service = new ContaApplicationService(repository);
-
+        ContaRepository contaRepository = new ContaRepositoryMock();
+        ResponsavelRepository responsavelRepository = new ResponsavelRepositoryMock();
+        EmpresaRepository empresaRepository = new EmpresaRepositoryMock();
+        
+        responsavelRepository.save(Responsavel.builder().id(idResponsavel).build());
+        empresaRepository.save(Empresa.builder().id(idEmpresa).build());
+        
+        
+        ContaApplicationService service = ContaApplicationService.builder()
+                .contaRepository(contaRepository)
+                .responsavelRepository(responsavelRepository)
+                .empresaRepository(empresaRepository)
+                .build();
+        
         AbrirContaCommand cmd = AbrirContaCommand.builder()
                 .empresaId(idEmpresa)
                 .responsavelId(idResponsavel)
@@ -126,7 +163,7 @@ public class ContaTest {
         ContaId idConta = service.handle(cmd);
 
         // THEN
-        assertTrue(repository.getOne(idConta).getSaldo() == 0);
+        assertTrue(contaRepository.getOne(idConta).getSaldo() == 0);
 
     }
 
@@ -186,6 +223,9 @@ public class ContaTest {
     @Test
     public void aoSolicitarCreditoEmergencialAte50PorCento() {
         
+        ContaRepository repository = new ContaRepositoryMock();
+        MovimentacaoRepository movimentacaoRepository = new MovimentacaoRepositoryMock();
+        
         // GIVEN
         Empresa empresa = Empresa.builder()
                 .id(idEmpresa)
@@ -204,11 +244,19 @@ public class ContaTest {
                 .empresa(empresa)
                 .build();
         
-        double valor = 9750;
+        repository.save(conta);
         
         //THEN
-        Movimentacao movimentacao;
-        movimentacao = conta.solicitarCreditoEmergencial(valor);
+        SolicitaCreditoEmergencialCommand cmd = SolicitaCreditoEmergencialCommand.builder()
+                .contaId(idConta)
+                .valor(9750)
+                .build();        
+        
+        MovimentacaoApplicationService app = new MovimentacaoApplicationService(movimentacaoRepository, repository);
+        
+        MovimentacaoId idMovimentacao = app.handle(cmd);
+        
+        Movimentacao movimentacao = movimentacaoRepository.getOne(idMovimentacao);
         
         assertTrue(movimentacao.getSituacao().equals(MovimentacaoSituacao.APROVADO));
     }
@@ -216,6 +264,9 @@ public class ContaTest {
     @Test
     public void aoSolicitarCreditoEmergencialAcimaDe50PorCento() {
         
+        ContaRepository repository = new ContaRepositoryMock();
+        MovimentacaoRepository movimentacaoRepository = new MovimentacaoRepositoryMock();
+        
         // GIVEN
         Empresa empresa = Empresa.builder()
                 .id(idEmpresa)
@@ -234,11 +285,19 @@ public class ContaTest {
                 .empresa(empresa)
                 .build();
         
-        double valor = 10000;
+        repository.save(conta);
         
         //THEN
-        Movimentacao movimentacao;
-        movimentacao = conta.solicitarCreditoEmergencial(valor);
+        SolicitaCreditoEmergencialCommand cmd = SolicitaCreditoEmergencialCommand.builder()
+                .contaId(idConta)
+                .valor(10000)
+                .build();
+                
+        MovimentacaoApplicationService app = new MovimentacaoApplicationService(movimentacaoRepository, repository);
+        
+        MovimentacaoId idMovimentacao = app.handle(cmd);
+        
+        Movimentacao movimentacao = movimentacaoRepository.getOne(idMovimentacao);
         
         assertTrue(movimentacao.getSituacao().equals(MovimentacaoSituacao.AGUARDANDO_APROVACAO));
     }
@@ -255,6 +314,51 @@ public class ContaTest {
         @Override
         public Conta getOne(ContaId id) {
             return contas.get(id);
+        }
+    }
+    
+    static class MovimentacaoRepositoryMock implements MovimentacaoRepository {
+
+        private final Map<MovimentacaoId, Movimentacao> movimentacoes = new LinkedHashMap<>();
+
+        @Override
+        public void save(Movimentacao movimentacao) {
+            movimentacoes.put(movimentacao.getId(), movimentacao);
+        }
+
+        @Override
+        public Movimentacao getOne(MovimentacaoId id) {
+            return movimentacoes.get(id);
+        }
+    }
+    
+    static class EmpresaRepositoryMock implements EmpresaRepository {
+
+        private final Map<EmpresaId, Empresa> empresas = new LinkedHashMap<>();
+
+        @Override
+        public void save(Empresa empresa) {
+            empresas.put(empresa.getId(), empresa);
+        }
+
+        @Override
+        public Empresa getOne(EmpresaId id) {
+            return empresas.get(id);
+        }
+    }
+    
+    static class ResponsavelRepositoryMock implements ResponsavelRepository {
+
+        private final Map<ResponsavelId, Responsavel > responsaveis = new LinkedHashMap<>();
+
+        @Override
+        public void save(Responsavel responsavel) {
+            responsaveis.put(responsavel.getId(), responsavel);
+        }
+
+        @Override
+        public Responsavel getOne(ResponsavelId id) {
+            return responsaveis.get(id);
         }
     }
 
