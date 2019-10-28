@@ -23,4 +23,6 @@ public class Empresa {
     
     private double qtdFuncionarios;
     
+    private String cnpj;
+   
 }

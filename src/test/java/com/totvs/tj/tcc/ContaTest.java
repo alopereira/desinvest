@@ -36,6 +36,19 @@ public class ContaTest {
     private final EmpresaId idEmpresa = EmpresaId.generate();
 
     private final ResponsavelId idResponsavel = ResponsavelId.generate();
+    
+    ContaRepository contaRepository = new ContaRepositoryMock();
+    
+    ResponsavelRepository responsavelRepository = new ResponsavelRepositoryMock();
+    
+    EmpresaRepository empresaRepository = new EmpresaRepositoryMock();
+    
+    MovimentacaoRepository movimentacaoRepository = new MovimentacaoRepositoryMock();
+    
+    public void populaMocks() {
+        responsavelRepository.save(Responsavel.builder().id(idResponsavel).build());
+        empresaRepository.save(Empresa.builder().id(idEmpresa).cnpj("61.366.936/0001-25").build());
+    }
 
     @Test
     public void aoCriarUmaConta() throws Exception {
@@ -62,13 +75,7 @@ public class ContaTest {
     @Test
     public void aoSolicitarAberturaConta() throws Exception {
 
-        ContaRepository contaRepository = new ContaRepositoryMock();
-        ResponsavelRepository responsavelRepository = new ResponsavelRepositoryMock();
-        EmpresaRepository empresaRepository = new EmpresaRepositoryMock();
-        
-        responsavelRepository.save(Responsavel.builder().id(idResponsavel).build());
-        empresaRepository.save(Empresa.builder().id(idEmpresa).build());
-        
+        this.populaMocks();
         
         // GIVEN
         ContaApplicationService service = ContaApplicationService.builder()
@@ -90,14 +97,36 @@ public class ContaTest {
         // THEN
         assertNotNull(idConta);
     }
+    
+    @Test
+    public void aoSolicitarAberturaContaPessoaFisica() throws Exception {
+
+        // GIVEN
+        this.populaMocks();
+        
+        ContaApplicationService service = ContaApplicationService.builder()
+                .contaRepository(contaRepository)
+                .empresaRepository(empresaRepository)
+                .responsavelRepository(responsavelRepository)
+                .build();
+
+        AbrirContaCommand cmd = AbrirContaCommand.builder()
+                .empresaId(idEmpresa)
+                .responsavelId(idResponsavel)
+                .build();
+
+        // WHEN
+        ContaId idConta = service.handle(cmd);
+
+        // THEN
+        assertNotNull(idConta);
+    }
 
     @Test
     public void supenderUmaContaExistente() throws Exception {
 
         // GIVEN
         SuspenderContaCommand cmd = SuspenderContaCommand.from(idConta);
-        
-        ContaRepository contaRepository = new ContaRepositoryMock();
 
         ContaApplicationService service = ContaApplicationService.builder()
                 .contaRepository(contaRepository)
@@ -140,13 +169,7 @@ public class ContaTest {
     public void validaCriacaoContaComSaldoZero() throws Exception {
         
         // GIVEN
-        ContaRepository contaRepository = new ContaRepositoryMock();
-        ResponsavelRepository responsavelRepository = new ResponsavelRepositoryMock();
-        EmpresaRepository empresaRepository = new EmpresaRepositoryMock();
-        
-        responsavelRepository.save(Responsavel.builder().id(idResponsavel).build());
-        empresaRepository.save(Empresa.builder().id(idEmpresa).build());
-        
+        this.populaMocks();        
         
         ContaApplicationService service = ContaApplicationService.builder()
                 .contaRepository(contaRepository)
@@ -223,9 +246,6 @@ public class ContaTest {
     @Test
     public void aoSolicitarCreditoEmergencialAte50PorCento() {
         
-        ContaRepository repository = new ContaRepositoryMock();
-        MovimentacaoRepository movimentacaoRepository = new MovimentacaoRepositoryMock();
-        
         // GIVEN
         Empresa empresa = Empresa.builder()
                 .id(idEmpresa)
@@ -244,7 +264,7 @@ public class ContaTest {
                 .empresa(empresa)
                 .build();
         
-        repository.save(conta);
+        contaRepository.save(conta);
         
         //THEN
         SolicitaCreditoEmergencialCommand cmd = SolicitaCreditoEmergencialCommand.builder()
@@ -252,7 +272,7 @@ public class ContaTest {
                 .valor(9750)
                 .build();        
         
-        MovimentacaoApplicationService app = new MovimentacaoApplicationService(movimentacaoRepository, repository);
+        MovimentacaoApplicationService app = new MovimentacaoApplicationService(movimentacaoRepository, contaRepository);
         
         MovimentacaoId idMovimentacao = app.handle(cmd);
         
