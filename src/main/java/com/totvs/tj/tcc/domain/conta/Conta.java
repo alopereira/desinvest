@@ -5,6 +5,10 @@ import static com.totvs.tj.tcc.domain.conta.Conta.Situacao.SUSPENSO;
 
 import com.totvs.tj.tcc.domain.empresa.Empresa;
 import com.totvs.tj.tcc.domain.empresa.EmpresaId;
+import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
+import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
+import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoMotivoRecusa;
+import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoSituacao;
 import com.totvs.tj.tcc.domain.responsavel.Responsavel;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 
@@ -89,7 +93,7 @@ public class Conta {
                     .id(MovimentacaoId.generate())
                     .contaId(this.id)
                     .situacao(MovimentacaoSituacao.REPROVADO)
-                    .motivo(MovimentacaoMotivo.LIMITE_JA_SOLICITADO)
+                    .motivoRecusa(MovimentacaoMotivoRecusa.LIMITE_JA_SOLICITADO)
                     .build();
             
             return movimentacao;
@@ -100,7 +104,7 @@ public class Conta {
                     .id(MovimentacaoId.generate())
                     .contaId(this.id)
                     .situacao(MovimentacaoSituacao.AGUARDANDO_APROVACAO)
-                    .motivo(MovimentacaoMotivo.LIMITE_ACIMA_MAXIMO)
+                    .motivoRecusa(MovimentacaoMotivoRecusa.LIMITE_ACIMA_MAXIMO)
                     .build();
             
             return movimentacao;

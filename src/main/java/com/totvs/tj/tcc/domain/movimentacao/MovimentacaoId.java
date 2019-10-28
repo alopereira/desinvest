@@ -1,4 +1,4 @@
-package com.totvs.tj.tcc.domain.conta;
+package com.totvs.tj.tcc.domain.movimentacao;
 
 import java.util.UUID;
 

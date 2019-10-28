@@ -1,4 +1,6 @@
-package com.totvs.tj.tcc.domain.conta;
+package com.totvs.tj.tcc.domain.movimentacao;
+
+import com.totvs.tj.tcc.domain.conta.ContaId;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +17,6 @@ public class Movimentacao {
     
     private MovimentacaoSituacao situacao;
     
-    private MovimentacaoMotivo motivo;
+    private MovimentacaoMotivoRecusa motivoRecusa;
     
 }

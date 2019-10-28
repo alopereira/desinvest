@@ -16,10 +16,10 @@ import com.totvs.tj.tcc.app.conta.SuspenderContaCommand;
 import com.totvs.tj.tcc.domain.conta.Conta;
 import com.totvs.tj.tcc.domain.conta.ContaId;
 import com.totvs.tj.tcc.domain.conta.ContaRepository;
-import com.totvs.tj.tcc.domain.conta.Movimentacao;
-import com.totvs.tj.tcc.domain.conta.MovimentacaoSituacao;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
 import com.totvs.tj.tcc.domain.empresa.EmpresaId;
+import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
+import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoSituacao;
 import com.totvs.tj.tcc.domain.responsavel.Responsavel;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 
