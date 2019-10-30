@@ -1,17 +1,5 @@
 package com.totvs.tj.tcc.domain.conta;
 
-import static com.totvs.tj.tcc.domain.conta.Conta.Situacao.ABERTO;
-import static com.totvs.tj.tcc.domain.conta.Conta.Situacao.SUSPENSO;
-
-import com.totvs.tj.tcc.domain.empresa.Empresa;
-import com.totvs.tj.tcc.domain.empresa.EmpresaId;
-import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
-import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
-import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoMotivoRecusa;
-import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoSituacao;
-import com.totvs.tj.tcc.domain.responsavel.Responsavel;
-import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -22,105 +10,23 @@ import lombok.ToString;
 public class Conta {
 
     private ContaId id;
-
-    private Empresa empresa;
-
-    private Responsavel responsavel;
-
-    private Situacao situacao;
-
+    
     private double saldo;
 
     private double limite;
-    
-    private int solicitacaoAumentoCredito;
 
-    private Conta(ContaId id, Empresa empresa, Responsavel responsavel, Situacao situacao, double saldo, double limite, int solicitacaoAumentoCredito) {
+    private Conta(ContaId id, double saldo, double limite) {
         super();
         this.id = id;
-        this.empresa = empresa;
-        this.responsavel = responsavel;
-        this.situacao = situacao;
         this.saldo = saldo;
-        this.solicitacaoAumentoCredito = solicitacaoAumentoCredito;
-        this.limite = this.calculaLimiteAbertura();
-    }
-
-    public EmpresaId getEmpresaId() {
-        return this.empresa.getId();
-    }
-
-    public ResponsavelId getResponsavelId() {
-        return this.responsavel.getId();
-    }
-
-    public void suspender() {
-        situacao = SUSPENSO;
-    }
-
-    public boolean isDisponivel() {
-        return ABERTO.equals(situacao);
-    }
-
-    static enum Situacao {
-
-        ABERTO,
-        SUSPENSO;
-
-    }
-
-    protected double calculaLimiteAbertura() {
-
-        double valorDaEmpresaPerc = this.empresa.getValor() * 0.1;
-        double qtdFuncionariosEmpresa = this.empresa.getQtdFuncionarios() * 10;
-
-        double valorLimiteConta = valorDaEmpresaPerc + qtdFuncionariosEmpresa;
-
-        if (valorLimiteConta > 15000) {
-            valorLimiteConta = 15000;
-        }
-
-        return valorLimiteConta;
-    }
-
-    public double calculaLimiteMaximoParaCreditoEmergencial() {
-
-        double limiteMaximo = this.limite + (this.limite * 0.5);
-
-        return limiteMaximo;
+        //this.limite = this.calculaLimiteAbertura();
     }
     
-    public boolean permiteSolicitarCreditoEmergencial() {
-        
-        return this.solicitacaoAumentoCredito == 0;
-        
+    
+    public void ajustaLimite(double limite) {
+        this.limite = limite;
     }
     
-    public Movimentacao solicitaCreditoEmergencial(double novoLimite) {
-        
-        MovimentacaoSituacao situacao = MovimentacaoSituacao.APROVADO;
-        MovimentacaoMotivoRecusa motivoRecusa = null;
-        
-        MovimentacaoId idMovimentacao = MovimentacaoId.generate();
-        
-        if (this.permiteSolicitarCreditoEmergencial() == false) {
-            situacao = MovimentacaoSituacao.REPROVADO;
-            motivoRecusa = MovimentacaoMotivoRecusa.LIMITE_JA_SOLICITADO;
-        } else if (novoLimite > this.calculaLimiteMaximoParaCreditoEmergencial()) {
-            situacao = MovimentacaoSituacao.AGUARDANDO_APROVACAO;
-            motivoRecusa = MovimentacaoMotivoRecusa.LIMITE_ACIMA_MAXIMO;
-        } else {
-            this.limite = novoLimite;
-        }
-        
-        this.solicitacaoAumentoCredito = this.solicitacaoAumentoCredito + 1;
-        
-        return Movimentacao.builder()
-                .id(idMovimentacao)
-                .contaId(this.id)
-                .situacao(situacao)
-                .motivoRecusa(motivoRecusa)
-                .build();
-    }
     
+
 }
