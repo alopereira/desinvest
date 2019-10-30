@@ -1,4 +1,4 @@
-package com.totvs.tj.tcc.domain.movimentacao;
+package com.totvs.tj.tcc.domain.emprestimo;
 
 import java.util.UUID;
 
@@ -7,7 +7,7 @@ import lombok.Value;
 
 @Value
 @AllArgsConstructor(staticName = "from")
-public class MovimentacaoId {
+public class EmprestimoId {
     
     private String value;
 
@@ -16,8 +16,8 @@ public class MovimentacaoId {
         return value;
     }
 
-    public static MovimentacaoId generate() {
-        return MovimentacaoId.from(UUID.randomUUID().toString());
+    public static EmprestimoId generate() {
+        return EmprestimoId.from(UUID.randomUUID().toString());
     }
 
 }

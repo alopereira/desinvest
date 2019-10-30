@@ -30,4 +30,13 @@ public class EmpresaApplicationService {
         return idEmpresa; 
     }
     
+    public void handle(SuspenderEmpresaCommand cmd) {
+
+        Empresa empresa = repository.getOne(cmd.getEmpresa());
+
+        empresa.suspender();
+
+        repository.save(empresa);
+    }
+    
 }

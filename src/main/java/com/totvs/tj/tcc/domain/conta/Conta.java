@@ -14,13 +14,6 @@ public class Conta {
     private double saldo;
 
     private double limite;
-
-    private Conta(ContaId id, double saldo, double limite) {
-        super();
-        this.id = id;
-        this.saldo = saldo;
-        //this.limite = this.calculaLimiteAbertura();
-    }
     
     
     public void ajustaLimite(double limite) {

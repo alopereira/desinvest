@@ -12,19 +12,19 @@ import org.junit.Test;
 
 import com.totvs.tj.tcc.app.conta.AbrirContaCommand;
 import com.totvs.tj.tcc.app.conta.ContaApplicationService;
-import com.totvs.tj.tcc.app.conta.SuspenderContaCommand;
-import com.totvs.tj.tcc.app.movimentacao.MovimentacaoApplicationService;
-import com.totvs.tj.tcc.app.movimentacao.SolicitaCreditoEmergencialCommand;
+import com.totvs.tj.tcc.app.empresa.SuspenderEmpresaCommand;
+import com.totvs.tj.tcc.app.emprestimo.EmprestimoApplicationService;
+import com.totvs.tj.tcc.app.emprestimo.SolicitaCreditoEmergencialCommand;
 import com.totvs.tj.tcc.domain.conta.Conta;
 import com.totvs.tj.tcc.domain.conta.ContaId;
 import com.totvs.tj.tcc.domain.conta.ContaRepository;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
 import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
-import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
-import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
-import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoRepository;
-import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoSituacao;
+import com.totvs.tj.tcc.domain.emprestimo.Emprestimo;
+import com.totvs.tj.tcc.domain.emprestimo.EmprestimoId;
+import com.totvs.tj.tcc.domain.emprestimo.EmprestimoRepository;
+import com.totvs.tj.tcc.domain.emprestimo.EmprestimoSituacao;
 import com.totvs.tj.tcc.domain.responsavel.Responsavel;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelRepository;
@@ -43,7 +43,7 @@ public class ContaTest {
     
     EmpresaRepository empresaRepository = new EmpresaRepositoryMock();
     
-    MovimentacaoRepository movimentacaoRepository = new MovimentacaoRepositoryMock();
+    EmprestimoRepository movimentacaoRepository = new MovimentacaoRepositoryMock();
     
     public void populaMocks() {
         responsavelRepository.save(Responsavel.builder().id(idResponsavel).build());
@@ -126,7 +126,7 @@ public class ContaTest {
     public void supenderUmaContaExistente() throws Exception {
 
         // GIVEN
-        SuspenderContaCommand cmd = SuspenderContaCommand.from(idConta);
+        SuspenderEmpresaCommand cmd = SuspenderEmpresaCommand.from(idConta);
 
         ContaApplicationService service = ContaApplicationService.builder()
                 .contaRepository(contaRepository)
@@ -151,7 +151,7 @@ public class ContaTest {
     public void aoNaoEncontrarContaParaSuspender() throws Exception {
 
         // GIVEN
-        SuspenderContaCommand cmd = SuspenderContaCommand.from(idConta);
+        SuspenderEmpresaCommand cmd = SuspenderEmpresaCommand.from(idConta);
 
         ContaApplicationService service = ContaApplicationService.builder()
                 .contaRepository(new ContaRepositoryMock())
@@ -272,20 +272,20 @@ public class ContaTest {
                 .valor(9750)
                 .build();        
         
-        MovimentacaoApplicationService app = new MovimentacaoApplicationService(movimentacaoRepository, contaRepository);
+        EmprestimoApplicationService app = new EmprestimoApplicationService(movimentacaoRepository, contaRepository);
         
-        MovimentacaoId idMovimentacao = app.handle(cmd);
+        EmprestimoId idMovimentacao = app.handle(cmd);
         
-        Movimentacao movimentacao = movimentacaoRepository.getOne(idMovimentacao);
+        Emprestimo movimentacao = movimentacaoRepository.getOne(idMovimentacao);
         
-        assertTrue(movimentacao.getSituacao().equals(MovimentacaoSituacao.APROVADO));
+        assertTrue(movimentacao.getSituacao().equals(EmprestimoSituacao.APROVADO));
     }
     
     @Test
     public void aoSolicitarCreditoEmergencialAcimaDe50PorCento() {
         
         ContaRepository repository = new ContaRepositoryMock();
-        MovimentacaoRepository movimentacaoRepository = new MovimentacaoRepositoryMock();
+        EmprestimoRepository movimentacaoRepository = new MovimentacaoRepositoryMock();
         
         // GIVEN
         Empresa empresa = Empresa.builder()
@@ -313,13 +313,13 @@ public class ContaTest {
                 .valor(10000)
                 .build();
                 
-        MovimentacaoApplicationService app = new MovimentacaoApplicationService(movimentacaoRepository, repository);
+        EmprestimoApplicationService app = new EmprestimoApplicationService(movimentacaoRepository, repository);
         
-        MovimentacaoId idMovimentacao = app.handle(cmd);
+        EmprestimoId idMovimentacao = app.handle(cmd);
         
-        Movimentacao movimentacao = movimentacaoRepository.getOne(idMovimentacao);
+        Emprestimo movimentacao = movimentacaoRepository.getOne(idMovimentacao);
         
-        assertTrue(movimentacao.getSituacao().equals(MovimentacaoSituacao.AGUARDANDO_APROVACAO));
+        assertTrue(movimentacao.getSituacao().equals(EmprestimoSituacao.AGUARDANDO_APROVACAO));
     }
 
     static class ContaRepositoryMock implements ContaRepository {
@@ -337,17 +337,17 @@ public class ContaTest {
         }
     }
     
-    static class MovimentacaoRepositoryMock implements MovimentacaoRepository {
+    static class MovimentacaoRepositoryMock implements EmprestimoRepository {
 
-        private final Map<MovimentacaoId, Movimentacao> movimentacoes = new LinkedHashMap<>();
+        private final Map<EmprestimoId, Emprestimo> movimentacoes = new LinkedHashMap<>();
 
         @Override
-        public void save(Movimentacao movimentacao) {
+        public void save(Emprestimo movimentacao) {
             movimentacoes.put(movimentacao.getId(), movimentacao);
         }
 
         @Override
-        public Movimentacao getOne(MovimentacaoId id) {
+        public Emprestimo getOne(EmprestimoId id) {
             return movimentacoes.get(id);
         }
     }

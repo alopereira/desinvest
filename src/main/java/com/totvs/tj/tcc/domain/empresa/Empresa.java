@@ -2,13 +2,11 @@ package com.totvs.tj.tcc.domain.empresa;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import com.totvs.tj.tcc.domain.conta.Conta;
-import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
-import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
-import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoSituacao;
+import com.totvs.tj.tcc.domain.conta.ContaId;
+import com.totvs.tj.tcc.domain.emprestimo.Emprestimo;
+import com.totvs.tj.tcc.domain.emprestimo.EmprestimoId;
+import com.totvs.tj.tcc.domain.emprestimo.EmprestimoSituacao;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 
 import lombok.AllArgsConstructor;
@@ -22,15 +20,10 @@ import lombok.ToString;
 @AllArgsConstructor(access = PRIVATE)
 public class Empresa {
 
-    @NotBlank
-    @NotNull
     private EmpresaId id;
 
-    @NotBlank
-    @NotNull
     private ResponsavelId responsaveId;
 
-    @NotNull
     private Conta conta;
 
     private double valor;
@@ -78,18 +71,18 @@ public class Empresa {
         SUSPENSO;
     }
 
-    public Movimentacao solicitaCreditoEmergencial(double novoLimite) {
+    public Emprestimo solicitaCreditoEmergencial(double novoLimite) {
 
-        MovimentacaoSituacao situacao = MovimentacaoSituacao.APROVADO;
+        EmprestimoSituacao situacao = EmprestimoSituacao.APROVADO;
         //MovimentacaoMotivoRecusa motivoRecusa = null;
 
-        MovimentacaoId idMovimentacao = MovimentacaoId.generate();
+        EmprestimoId idMovimentacao = EmprestimoId.generate();
 
         if (this.permiteSolicitarCreditoEmergencial() == false) {
-            situacao = MovimentacaoSituacao.REPROVADO;
+            situacao = EmprestimoSituacao.REPROVADO;
             //motivoRecusa = MovimentacaoMotivoRecusa.LIMITE_JA_SOLICITADO;
         } else if (novoLimite > this.calculaLimiteMaximoParaCreditoEmergencial()) {
-            situacao = MovimentacaoSituacao.AGUARDANDO_APROVACAO;
+            situacao = EmprestimoSituacao.AGUARDANDO_APROVACAO;
             //motivoRecusa = MovimentacaoMotivoRecusa.LIMITE_ACIMA_MAXIMO;
         } else {
             this.conta.ajustaLimite(novoLimite);
@@ -97,18 +90,31 @@ public class Empresa {
 
         this.incrementaSolicitacaoAumentoCredito();
 
-        return Movimentacao.builder()
+        return Emprestimo.builder()
                 .id(idMovimentacao)
                 .contaId(conta.getId())
                 .situacao(situacao)
                 .build();
     }
-    
+
     public double calculaLimiteMaximoParaCreditoEmergencial() {
         double limiteMaximo = this.conta.getLimite() + (this.conta.getLimite() * 0.5);
         return limiteMaximo;
     }
-    
-    
+
+    public void abrirConta() {
+
+        Conta conta = Conta.builder()
+                .id(ContaId.generate())
+                .saldo(0)
+                .limite(this.calculaLimiteParaAberturaConta())
+                .build();
+
+        this.conta = conta;
+    }
+
+    public ContaId getContaId() {
+        return this.conta.getId();
+    }
 
 }

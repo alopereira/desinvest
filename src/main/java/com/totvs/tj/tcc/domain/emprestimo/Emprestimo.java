@@ -1,4 +1,4 @@
-package com.totvs.tj.tcc.domain.movimentacao;
+package com.totvs.tj.tcc.domain.emprestimo;
 
 import com.totvs.tj.tcc.domain.conta.ContaId;
 
@@ -9,14 +9,14 @@ import lombok.ToString;
 @Getter
 @ToString
 @Builder
-public class Movimentacao {
+public class Emprestimo {
     
-    private MovimentacaoId id;
+    private EmprestimoId id;
     
     private ContaId contaId;
     
-    private MovimentacaoSituacao situacao;
+    private EmprestimoSituacao situacao;
     
-    private MovimentacaoMotivoRecusa motivoRecusa;
+    private EmprestimoMotivoRecusa motivoRecusa;
     
 }
