@@ -13,21 +13,32 @@ import com.totvs.tj.tcc.domain.emprestimo.EmprestimoRepository;
 @Service
 public class EmprestimoApplicationService {
     
-    private EmprestimoRepository repository;
+    private EmprestimoRepository emprestimoRepository;
     private EmpresaRepository empresaRepository;
     
-    public EmprestimoApplicationService(EmprestimoRepository repository,
+    public EmprestimoApplicationService(EmprestimoRepository emprestimoRepository,
             EmpresaRepository empresaRepository) {
-        this.repository = repository;
+        this.emprestimoRepository = emprestimoRepository;
         this.empresaRepository = empresaRepository;
     }
     
     @Transactional
-    public EmprestimoId handle(SolicitaCreditoEmergencialCommand cmd) {
+    public double handle(SolicitaCreditoEmergencialCommand cmd) {
         Empresa empresa = this.empresaRepository.getOne(cmd.getEmpresaId());
-        Emprestimo emprestimo = empresa.solicitaCreditoEmergencial(cmd.getValor());
+        empresa.solicitaLimiteEmergencial(cmd.getValor());
         
-        repository.save(emprestimo);
+        empresaRepository.save(empresa);
+        
+        return emprestimo.getId();
+    }
+    
+    @Transactional
+    public EmprestimoId handle(SolicitaEmprestimoCommand cmd) {
+        Empresa empresa = this.empresaRepository.getOne(cmd.getEmpresaId());
+        
+        Emprestimo emprestimo = empresa.criaSolicitacaoEmprestimo(cmd.getValor());
+        
+        emprestimoRepository.save(emprestimo);
         
         return emprestimo.getId();
     }

@@ -1,6 +1,6 @@
 package com.totvs.tj.tcc.domain.emprestimo;
 
-import com.totvs.tj.tcc.domain.conta.ContaId;
+import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +13,9 @@ public class Emprestimo {
     
     private EmprestimoId id;
     
-    private ContaId contaId;
+    private EmpresaId empresaId;
+    
+    private double valor;
     
     private EmprestimoSituacao situacao;
     

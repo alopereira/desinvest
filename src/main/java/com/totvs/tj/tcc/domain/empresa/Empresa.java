@@ -71,34 +71,35 @@ public class Empresa {
         SUSPENSO;
     }
 
-    public Emprestimo solicitaCreditoEmergencial(double novoLimite) {
+    public Emprestimo criaSolicitacaoEmprestimo(double valor) {
 
-        EmprestimoSituacao situacao = EmprestimoSituacao.APROVADO;
-        //MovimentacaoMotivoRecusa motivoRecusa = null;
+        EmprestimoSituacao situacao;
 
-        EmprestimoId idMovimentacao = EmprestimoId.generate();
-
-        if (this.permiteSolicitarCreditoEmergencial() == false) {
-            situacao = EmprestimoSituacao.REPROVADO;
-            //motivoRecusa = MovimentacaoMotivoRecusa.LIMITE_JA_SOLICITADO;
-        } else if (novoLimite > this.calculaLimiteMaximoParaCreditoEmergencial()) {
+        if (valor > (this.conta.getLimite() * 1.25) - this.conta.getSaldo()) {
             situacao = EmprestimoSituacao.AGUARDANDO_APROVACAO;
-            //motivoRecusa = MovimentacaoMotivoRecusa.LIMITE_ACIMA_MAXIMO;
         } else {
+            situacao = EmprestimoSituacao.APROVADO;
+        }
+
+        return Emprestimo.builder()
+                .id(EmprestimoId.generate())
+                .empresaId(this.id)
+                .situacao(situacao)
+                .valor(valor)
+                .build();
+    }
+
+    public void solicitaLimiteEmergencial(double novoLimite) {
+        if (this.permiteSolicitarCreditoEmergencial() == true
+                && novoLimite <= this.calculaLimiteMaximoParaCreditoEmergencial()) {
             this.conta.ajustaLimite(novoLimite);
         }
 
         this.incrementaSolicitacaoAumentoCredito();
-
-        return Emprestimo.builder()
-                .id(idMovimentacao)
-                .contaId(conta.getId())
-                .situacao(situacao)
-                .build();
     }
 
     public double calculaLimiteMaximoParaCreditoEmergencial() {
-        double limiteMaximo = this.conta.getLimite() + (this.conta.getLimite() * 0.5);
+        double limiteMaximo = this.conta.getLimite() * 1.5;
         return limiteMaximo;
     }
 
