@@ -10,33 +10,26 @@ import org.junit.Test;
 
 import com.totvs.tj.tcc.app.emprestimo.EmprestimoApplicationService;
 import com.totvs.tj.tcc.app.emprestimo.SolicitaEmprestimoCommand;
-import com.totvs.tj.tcc.domain.conta.Conta;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
 import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
 import com.totvs.tj.tcc.domain.emprestimo.Emprestimo;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoId;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoRepository;
-import com.totvs.tj.tcc.domain.responsavel.Responsavel;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 
 public class EmprestimoTest {
 
     private final EmpresaId empresaId = EmpresaId.generate();
     private final ResponsavelId responsavelId = ResponsavelId.generate();
+    
+    EmprestimoRepository emprestimoRepository = new EmprestimoRepositoryMock();
+    EmpresaRepository empresaRepository = new EmpresaRepositoryMock();
 
     @Test
     public void aoSolicitarEmprestimoDentroDoLimite() throws Exception {
-
-        EmprestimoRepository emprestimoRepository = new EmprestimoRepositoryMock();
-        EmpresaRepository empresaRepository = new EmpresaRepositoryMock();
-
-        // WHEN
-        Responsavel responsavel = Responsavel.builder()
-                .id(responsavelId)
-                .supervisor("teste")
-                .build();
-
+        
+        // GIVEN
         Empresa empresa = Empresa.builder()
                 .id(empresaId)
                 .cnpj("9999999999")
@@ -46,21 +39,23 @@ public class EmprestimoTest {
                 .build();
 
         empresa.abrirConta();
+        empresaRepository.save(empresa);
 
-        EmprestimoApplicationService emprestimoApp = new EmprestimoApplicationService(emprestimoRepository, empresaRepository);
+        EmprestimoApplicationService emprestimoApplication = new EmprestimoApplicationService(emprestimoRepository, empresaRepository);
         
+        // WHEN
         SolicitaEmprestimoCommand cmd = SolicitaEmprestimoCommand.builder()
                 .empresaId(empresaId)
                 .valor(10)
                 .build();
         
-        emprestimoApp.handle(cmd);
+        EmprestimoId emprestimoId = emprestimoApplication.handle(cmd);
         
-        Conta conta = empresa.getConta();
+        Emprestimo emprestimo = emprestimoRepository.getOne(emprestimoId);
 
         // THEN
-        assertNotNull(responsavel);
-        assertEquals(idResponsavel, responsavel.getId());
+        assertNotNull(emprestimo);
+        assertEquals(emprestimoId, emprestimo.getId());
 
     }
 

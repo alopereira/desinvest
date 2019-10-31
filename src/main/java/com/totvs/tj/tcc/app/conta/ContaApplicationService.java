@@ -36,6 +36,7 @@ public class ContaApplicationService {
         empresa.abrirConta();
 
         empresaRepository.save(empresa);
+        contaRepository.save(empresa.getConta());
 
         return empresa.getContaId();
     }

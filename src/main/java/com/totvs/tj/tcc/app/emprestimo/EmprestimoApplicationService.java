@@ -10,7 +10,10 @@ import com.totvs.tj.tcc.domain.emprestimo.Emprestimo;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoId;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoRepository;
 
+import lombok.Builder;
+
 @Service
+@Builder
 public class EmprestimoApplicationService {
     
     private EmprestimoRepository emprestimoRepository;
@@ -20,16 +23,6 @@ public class EmprestimoApplicationService {
             EmpresaRepository empresaRepository) {
         this.emprestimoRepository = emprestimoRepository;
         this.empresaRepository = empresaRepository;
-    }
-    
-    @Transactional
-    public double handle(SolicitaCreditoEmergencialCommand cmd) {
-        Empresa empresa = this.empresaRepository.getOne(cmd.getEmpresaId());
-        empresa.solicitaLimiteEmergencial(cmd.getValor());
-        
-        empresaRepository.save(empresa);
-        
-        return emprestimo.getId();
     }
     
     @Transactional
