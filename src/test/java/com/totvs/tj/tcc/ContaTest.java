@@ -91,9 +91,13 @@ public class ContaTest {
 
         // WHEN
         ContaId idConta = service.handle(cmd);
+        Empresa obterEmpresa = service.getEmpresaById(empresaId);
+        Responsavel obterResponsavel = service.getResponsavelById(responsavelId);
 
         // THEN
         assertNotNull(idConta);
+        assertNotNull(obterEmpresa);
+        assertNotNull(obterResponsavel);
     }
 
     @Test
@@ -115,9 +119,13 @@ public class ContaTest {
 
         // WHEN
         ContaId idConta = service.handle(cmd);
+        Empresa obterEmpresa = service.getEmpresaById(empresaId);
+        Responsavel obterResponsavel = service.getResponsavelById(responsavelId);
 
         // THEN
         assertNotNull(idConta);
+        assertNotNull(obterEmpresa);
+        assertNotNull(obterResponsavel);
     }
 
     @Test
@@ -178,9 +186,13 @@ public class ContaTest {
 
         // WHEN
         ContaId idConta = service.handle(cmd);
+        Empresa obterEmpresa = service.getEmpresaById(empresaId);
+        Responsavel obterResponsavel = service.getResponsavelById(responsavelId);
 
         // THEN
         assertTrue(contaRepository.getOne(idConta).getSaldo() == 0);
+        assertNotNull(obterEmpresa);
+        assertNotNull(obterResponsavel);
 
     }
 
