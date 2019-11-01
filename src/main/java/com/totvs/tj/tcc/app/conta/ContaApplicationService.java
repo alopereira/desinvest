@@ -58,11 +58,11 @@ public class ContaApplicationService {
         return empresa.getContaId();
     }
 
-    protected Empresa getEmpresaById(EmpresaId empresaId) {
+    public Empresa getEmpresaById(EmpresaId empresaId) {
         return empresaRepository.getOne(empresaId);
     }
 
-    protected Responsavel getResponsavelById(ResponsavelId responsavelId) {
+    public Responsavel getResponsavelById(ResponsavelId responsavelId) {
         return responsavelRepository.getOne(responsavelId);
     }
 
