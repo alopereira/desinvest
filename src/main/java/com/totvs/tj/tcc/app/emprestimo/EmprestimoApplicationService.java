@@ -59,7 +59,6 @@ public class EmprestimoApplicationService {
         
         empresa.devolverEmprestimo(cmd.getValor());
         
-        
     }
     
     
