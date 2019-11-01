@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.totvs.tj.tcc.app.emprestimo.DevolverEmpresstimoCommand;
+import com.totvs.tj.tcc.app.emprestimo.DevolverEmprestimoCommand;
 import com.totvs.tj.tcc.app.emprestimo.EmprestimoApplicationService;
 import com.totvs.tj.tcc.app.emprestimo.SolicitaEmprestimoCommand;
 import com.totvs.tj.tcc.domain.conta.Conta;
@@ -19,6 +19,10 @@ import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
 import com.totvs.tj.tcc.domain.emprestimo.Emprestimo;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoId;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoRepository;
+import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
+import com.totvs.tj.tcc.domain.movimentacao.Movimentacao.TipoMovimentacao;
+import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
+import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoRepository;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 
 public class EmprestimoTest {
@@ -28,6 +32,7 @@ public class EmprestimoTest {
     
     EmprestimoRepository emprestimoRepository = new EmprestimoRepositoryMock();
     EmpresaRepository empresaRepository = new EmpresaRepositoryMock();
+    MovimentacaoRepository movimentacaoRepository = new MovimentacaoRepositoryMock();
 
     @Test
     public void aoSolicitarEmprestimoDentroDoLimite() throws Exception {
@@ -44,8 +49,12 @@ public class EmprestimoTest {
         empresa.abrirConta();
         empresaRepository.save(empresa);
 
-        EmprestimoApplicationService emprestimoApplication = new EmprestimoApplicationService(emprestimoRepository, empresaRepository);
-        
+        EmprestimoApplicationService emprestimoApplication = EmprestimoApplicationService.builder()
+                .emprestimoRepository(emprestimoRepository)
+                .empresaRepository(empresaRepository)
+                .movimentacaoRepository(movimentacaoRepository)
+                .build();
+                
         // WHEN
         SolicitaEmprestimoCommand cmd = SolicitaEmprestimoCommand.builder()
                 .empresaId(empresaId)
@@ -59,7 +68,6 @@ public class EmprestimoTest {
         // THEN
         assertNotNull(emprestimo);
         assertEquals(emprestimoId, emprestimo.getId());
-
     }
     
     @Test
@@ -77,9 +85,12 @@ public class EmprestimoTest {
         empresa.abrirConta();
         empresaRepository.save(empresa);
 
-        EmprestimoApplicationService emprestimoApplication = new EmprestimoApplicationService(emprestimoRepository, empresaRepository);
+        EmprestimoApplicationService emprestimoApplication = EmprestimoApplicationService.builder()
+                .emprestimoRepository(emprestimoRepository)
+                .empresaRepository(empresaRepository)
+                .movimentacaoRepository(movimentacaoRepository)
+                .build();
         
-        // WHEN
         SolicitaEmprestimoCommand cmd = SolicitaEmprestimoCommand.builder()
                 .empresaId(empresaId)
                 .valor(5000)
@@ -87,19 +98,20 @@ public class EmprestimoTest {
         
         EmprestimoId emprestimoId = emprestimoApplication.handle(cmd);
         
-        DevolverEmpresstimoCommand cmdDevolver = DevolverEmpresstimoCommand.builder()
-                .empresaId(empresaId)
+        // WHEN
+        DevolverEmprestimoCommand cmdDevolver = DevolverEmprestimoCommand.builder()
+                .emprestimoId(emprestimoId)
                 .valor(2000)
                 .build();
         
-        emprestimoApplication.handle(cmdDevolver);
+        Movimentacao movimentacao = emprestimoApplication.handle(cmdDevolver);
         
         empresa = empresaRepository.getOne(empresaId);
             
         //THEN
         Conta conta = empresa.getConta();
         assertTrue(conta.getSaldo() == 3000);
-        
+        assertTrue(movimentacao.getTipo() == TipoMovimentacao.DEVOLUCAO);
     }
 
     static class EmprestimoRepositoryMock implements EmprestimoRepository {
@@ -129,6 +141,21 @@ public class EmprestimoTest {
         @Override
         public Empresa getOne(EmpresaId id) {
             return empresas.get(id);
+        }
+    }
+    
+    static class MovimentacaoRepositoryMock implements MovimentacaoRepository {
+
+        private final Map<MovimentacaoId, Movimentacao> movimentacoes = new LinkedHashMap<>();
+
+        @Override
+        public void save(Movimentacao movimentacao) {
+            movimentacoes.put(movimentacao.getId(), movimentacao);
+        }
+
+        @Override
+        public Movimentacao getOne(MovimentacaoId id) {
+            return movimentacoes.get(id);
         }
     }
 }
