@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.totvs.tj.tcc.app.emprestimo.DevolverEmpresstimoCommand;
+import com.totvs.tj.tcc.app.emprestimo.DevolverEmprestimoCommand;
 import com.totvs.tj.tcc.app.emprestimo.EmprestimoApplicationService;
 import com.totvs.tj.tcc.app.emprestimo.SolicitaEmprestimoCommand;
 import com.totvs.tj.tcc.domain.conta.Conta;
@@ -99,7 +99,7 @@ public class EmprestimoTest {
         EmprestimoId emprestimoId = emprestimoApplication.handle(cmd);
         
         // WHEN
-        DevolverEmpresstimoCommand cmdDevolver = DevolverEmpresstimoCommand.builder()
+        DevolverEmprestimoCommand cmdDevolver = DevolverEmprestimoCommand.builder()
                 .emprestimoId(emprestimoId)
                 .valor(2000)
                 .build();

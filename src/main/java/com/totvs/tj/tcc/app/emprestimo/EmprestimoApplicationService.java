@@ -56,7 +56,7 @@ public class EmprestimoApplicationService {
     }
     
     @Transactional
-    public Movimentacao handle(DevolverEmpresstimoCommand cmd) {
+    public Movimentacao handle(DevolverEmprestimoCommand cmd) {
         
         Emprestimo emprestimo = this.emprestimoRepository.getOne(cmd.getEmprestimoId());        
         emprestimo.devolver(cmd.getValor());        

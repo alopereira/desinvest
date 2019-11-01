@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class DevolverEmpresstimoCommand {
+public class DevolverEmprestimoCommand {
     
     private EmprestimoId emprestimoId;
     
