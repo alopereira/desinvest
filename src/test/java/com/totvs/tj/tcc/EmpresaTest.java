@@ -8,8 +8,10 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.totvs.tj.tcc.ContaTest.ContaRepositoryMock;
 import com.totvs.tj.tcc.app.empresa.EmpresaApplicationService;
 import com.totvs.tj.tcc.app.empresa.SalvaEmpresaCommand;
+import com.totvs.tj.tcc.domain.conta.ContaRepository;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
 import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
@@ -20,6 +22,12 @@ import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoRepository;
 public class EmpresaTest {
 
     private final EmpresaId idEmpresa = EmpresaId.generate();
+    
+    EmpresaRepository empresaRepository = new EmpresaRepositoryMock();
+    
+    MovimentacaoRepository movimentacaoRepository = new MovimentacaoRepositoryMock();
+    
+    ContaRepository contaRepository = new ContaRepositoryMock();
 
     @Test
     public void aoCriarUmaEmpresa() throws Exception {
@@ -41,9 +49,12 @@ public class EmpresaTest {
     @Test
     public void aoSalvarUmaEmpresa() throws Exception {
 
-        // GIVEN
-        EmpresaRepository repository = new EmpresaRepositoryMock();
-        EmpresaApplicationService service = new EmpresaApplicationService(repository, new MovimentacaoRepositoryMock());
+        // GIVEN        
+        EmpresaApplicationService service = EmpresaApplicationService.builder()
+                .empresaRepository(empresaRepository)
+                .movimentacaoRepository(movimentacaoRepository)
+                .contaRepository(contaRepository)
+                .build();
 
         SalvaEmpresaCommand cmd = SalvaEmpresaCommand.builder()
                 .valor(50000)
