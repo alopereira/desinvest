@@ -81,6 +81,29 @@ public class EmprestimoApplicationService {
         
         return movimentacao;        
     }
+
+    public Movimentacao handle(AprovarSolicitacaoEmprestimoCommand cmdAprovar) {
+
+        Emprestimo emprestimo = this.emprestimoRepository.getOne(cmdAprovar.getEmprestimoId());        
+        emprestimo.aprovar();        
+        emprestimoRepository.save(emprestimo);
+        
+        EmpresaId empresaId = emprestimo.getEmpresaId();
+        Empresa empresa = empresaRepository.getOne(empresaId);
+        
+        Movimentacao movimentacao = Movimentacao.builder()
+                .id(MovimentacaoId.generate())
+                .contaId(empresa.getContaId())
+                .empresaId(empresa.getId())
+                .dataHora(LocalDateTime.now())
+                .valor(emprestimo.getValor())
+                .tipo(TipoMovimentacao.APROVAR_SOLICITACAO_EMPRESTIMO)
+                .build();  
+        
+        this.movimentacaoRepository.save(movimentacao);
+        
+        return movimentacao;          
+    }
     
     
 }

@@ -30,5 +30,9 @@ public class Emprestimo {
         }
         
     }
+
+    public void aprovar() {
+        this.situacao = EmprestimoSituacao.APROVADO;
+    }
         
 }
