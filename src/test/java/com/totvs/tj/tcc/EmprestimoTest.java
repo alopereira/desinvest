@@ -69,6 +69,7 @@ public class EmprestimoTest {
         // THEN
         assertNotNull(emprestimo);
         assertEquals(emprestimoId, emprestimo.getId());
+        assertTrue(emprestimo.getSituacao() == EmprestimoSituacao.APROVADO);
     }
     
     @Test
@@ -167,6 +168,43 @@ public class EmprestimoTest {
         assertTrue(movimentacao.getTipo() == TipoMovimentacao.DEVOLUCAO);
         assertTrue(emprestimo.getSituacao() == EmprestimoSituacao.QUITADO);
         
+    }
+    
+    @Test
+    public void aoSolicitarEmprestimoAcimaDoLimite() throws Exception {
+        
+        // GIVEN
+        Empresa empresa = Empresa.builder()
+                .id(empresaId)
+                .cnpj("9999999999")
+                .qtdFuncionarios(1500)
+                .valor(15000)
+                .responsaveId(responsavelId)
+                .build();
+
+        empresa.abrirConta();
+        empresaRepository.save(empresa);
+
+        EmprestimoApplicationService emprestimoApplication = EmprestimoApplicationService.builder()
+                .emprestimoRepository(emprestimoRepository)
+                .empresaRepository(empresaRepository)
+                .movimentacaoRepository(movimentacaoRepository)
+                .build();
+                
+        // WHEN
+        SolicitaEmprestimoCommand cmd = SolicitaEmprestimoCommand.builder()
+                .empresaId(empresaId)
+                .valor(999999)
+                .build();
+        
+        EmprestimoId emprestimoId = emprestimoApplication.handle(cmd);
+        
+        Emprestimo emprestimo = emprestimoRepository.getOne(emprestimoId);
+
+        // THEN
+        assertNotNull(emprestimo);
+        assertEquals(emprestimoId, emprestimo.getId());
+        assertTrue(emprestimo.getSituacao() == EmprestimoSituacao.AGUARDANDO_APROVACAO);
     }
 
     static class EmprestimoRepositoryMock implements EmprestimoRepository {
