@@ -83,8 +83,9 @@ public class ContaTest {
 
         // GIVEN
         EmpresaApplicationService service = EmpresaApplicationService.builder()
-                .contaRepository(contaRepository)
                 .empresaRepository(empresaRepository)
+                .movimentacaoRepository(movimentacaoRepository)
+                .contaRepository(contaRepository)
                 .build();
 
         AbrirContaCommand cmd = AbrirContaCommand.builder()
@@ -105,8 +106,9 @@ public class ContaTest {
         this.populaMocks();
 
         EmpresaApplicationService service = EmpresaApplicationService.builder()
-                .contaRepository(contaRepository)
                 .empresaRepository(empresaRepository)
+                .movimentacaoRepository(movimentacaoRepository)
+                .contaRepository(contaRepository)
                 .build();
 
         AbrirContaCommand cmd = AbrirContaCommand.builder()
@@ -150,9 +152,10 @@ public class ContaTest {
         // GIVEN
         SuspenderEmpresaCommand cmd = SuspenderEmpresaCommand.from(empresaId);
 
-        EmpresaApplicationService service = EmpresaApplicationService
-                .builder()
+        EmpresaApplicationService service = EmpresaApplicationService.builder()
                 .empresaRepository(empresaRepository)
+                .movimentacaoRepository(movimentacaoRepository)
+                .contaRepository(contaRepository)
                 .build();
         // WHEN
         service.handle(cmd);
@@ -168,8 +171,9 @@ public class ContaTest {
         this.populaMocks();
 
         EmpresaApplicationService service = EmpresaApplicationService.builder()
-                .contaRepository(contaRepository)
                 .empresaRepository(empresaRepository)
+                .movimentacaoRepository(movimentacaoRepository)
+                .contaRepository(contaRepository)
                 .build();
 
         AbrirContaCommand cmd = AbrirContaCommand.builder()
@@ -242,6 +246,8 @@ public class ContaTest {
         // WHEN
         EmpresaApplicationService empresaApplication = EmpresaApplicationService.builder()
                 .empresaRepository(empresaRepository)
+                .movimentacaoRepository(movimentacaoRepository)
+                .contaRepository(contaRepository)
                 .build();
         
         //THEN
