@@ -280,7 +280,7 @@ public class ContaTest {
 
         assertTrue(novoLimite == limiteAntigo);
     }
-
+    
     static class ContaRepositoryMock implements ContaRepository {
 
         private final Map<ContaId, Conta> contas = new LinkedHashMap<>();

@@ -36,6 +36,14 @@ public class EmprestimoApplicationService {
         return emprestimo.getId();
     }
     
+    public void handle(DevolverEmpresstimoCommand cmd) {
+        
+        Empresa empresa = this.empresaRepository.getOne(cmd.getEmpresaId());
+        
+        empresa.devolverEmprestimo(cmd.getValor());
+        
+        
+    }
     
     
 }

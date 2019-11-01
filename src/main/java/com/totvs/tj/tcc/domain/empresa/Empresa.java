@@ -79,6 +79,7 @@ public class Empresa {
             situacao = EmprestimoSituacao.AGUARDANDO_APROVACAO;
         } else {
             situacao = EmprestimoSituacao.APROVADO;
+            this.conta.atualizarSaldoDevedor(valor);
         }
 
         return Emprestimo.builder()
@@ -124,6 +125,12 @@ public class Empresa {
         }
         
         return 0;
+    }
+    
+    public void devolverEmprestimo(double valor) {
+        
+        this.conta.reporSaldoDevedor(valor);
+        
     }
 
 }
