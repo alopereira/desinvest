@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class AprovarSolicitacaoEmprestimoCommand {
+public class ReprovarSolicitacaoEmprestimo {
     
     private EmprestimoId emprestimoId;
 

@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.totvs.tj.tcc.app.emprestimo.AprovarSolicitacaoEmprestimoCommand;
 import com.totvs.tj.tcc.app.emprestimo.DevolverEmprestimoCommand;
 import com.totvs.tj.tcc.app.emprestimo.EmprestimoApplicationService;
+import com.totvs.tj.tcc.app.emprestimo.ReprovarSolicitacaoEmprestimo;
 import com.totvs.tj.tcc.app.emprestimo.SolicitaEmprestimoCommand;
 import com.totvs.tj.tcc.domain.conta.Conta;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
@@ -247,6 +248,47 @@ public class EmprestimoTest {
         // THEN
         assertTrue(movimentacao.getTipo() == TipoMovimentacao.APROVAR_SOLICITACAO_EMPRESTIMO);
         assertTrue(emprestimo.getSituacao() == EmprestimoSituacao.APROVADO);
+    }
+    
+    @Test
+    public void aoReprovarSolicitacaoEmprestimoAcimaDoLimite() throws Exception {
+        
+        // GIVEN
+        Empresa empresa = Empresa.builder()
+                .id(empresaId)
+                .cnpj("9999999999")
+                .qtdFuncionarios(1500)
+                .valor(15000)
+                .responsaveId(responsavelId)
+                .build();
+
+        empresa.abrirConta();
+        empresaRepository.save(empresa);
+
+        EmprestimoApplicationService emprestimoApplication = EmprestimoApplicationService.builder()
+                .emprestimoRepository(emprestimoRepository)
+                .empresaRepository(empresaRepository)
+                .movimentacaoRepository(movimentacaoRepository)
+                .build();
+                
+        // WHEN
+        SolicitaEmprestimoCommand cmd = SolicitaEmprestimoCommand.builder()
+                .empresaId(empresaId)
+                .valor(999999)
+                .build();
+        
+        EmprestimoId emprestimoId = emprestimoApplication.handle(cmd);
+        
+        ReprovarSolicitacaoEmprestimo cmdReprovar = ReprovarSolicitacaoEmprestimo.builder()
+                .emprestimoId(emprestimoId)
+                .build();
+        
+        Movimentacao movimentacao = emprestimoApplication.handle(cmdReprovar);
+        Emprestimo emprestimo = emprestimoRepository.getOne(emprestimoId);
+
+        // THEN
+        assertTrue(movimentacao.getTipo() == TipoMovimentacao.SOLICITA_LIMITE_EMERGENCIAL);
+        assertTrue(emprestimo.getSituacao() == EmprestimoSituacao.AGUARDANDO_LIMITE_EMERGENCIAL);
     }
 
     static class EmprestimoRepositoryMock implements EmprestimoRepository {

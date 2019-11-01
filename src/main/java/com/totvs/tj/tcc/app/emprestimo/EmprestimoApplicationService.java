@@ -49,7 +49,7 @@ public class EmprestimoApplicationService {
                 .empresaId(empresa.getId())
                 .dataHora(LocalDateTime.now())
                 .valor(cmd.getValor())
-                .tipo(TipoMovimentacao.SOLICITA_CREDITO_EMERGENCIAL)
+                .tipo(TipoMovimentacao.SOLICITA_LIMITE_EMERGENCIAL)
                 .build());
         
         return emprestimo.getId();
@@ -98,6 +98,40 @@ public class EmprestimoApplicationService {
                 .dataHora(LocalDateTime.now())
                 .valor(emprestimo.getValor())
                 .tipo(TipoMovimentacao.APROVAR_SOLICITACAO_EMPRESTIMO)
+                .build();  
+        
+        this.movimentacaoRepository.save(movimentacao);
+        
+        return movimentacao;          
+    }
+
+    public Movimentacao handle(ReprovarSolicitacaoEmprestimo cmdReprovar) {
+        
+        Emprestimo emprestimo = this.emprestimoRepository.getOne(cmdReprovar.getEmprestimoId());     
+        
+        EmpresaId empresaId = emprestimo.getEmpresaId();
+        Empresa empresa = empresaRepository.getOne(empresaId);
+        
+        double quantidadeSolicitacoesLimite = empresa.getSolicitacaoAumentoCredito();
+        TipoMovimentacao tipo;
+        
+        if (quantidadeSolicitacoesLimite > 0) {
+            emprestimo.reprovar(); 
+            tipo = TipoMovimentacao.REPROVAR_EMPRESTIMO;
+        } else {
+            emprestimo.aguardarLimiteEmergencial();
+            tipo = TipoMovimentacao.SOLICITA_LIMITE_EMERGENCIAL;
+        }        
+               
+        emprestimoRepository.save(emprestimo);
+        
+        Movimentacao movimentacao = Movimentacao.builder()
+                .id(MovimentacaoId.generate())
+                .contaId(empresa.getContaId())
+                .empresaId(empresa.getId())
+                .dataHora(LocalDateTime.now())
+                .valor(emprestimo.getValor())
+                .tipo(tipo)
                 .build();  
         
         this.movimentacaoRepository.save(movimentacao);

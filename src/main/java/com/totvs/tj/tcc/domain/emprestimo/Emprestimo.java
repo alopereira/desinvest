@@ -10,29 +10,37 @@ import lombok.ToString;
 @ToString
 @Builder
 public class Emprestimo {
-    
+
     private EmprestimoId id;
-    
+
     private EmpresaId empresaId;
-    
+
     private double valor;
-    
+
     private EmprestimoSituacao situacao;
-    
+
     private EmprestimoMotivoRecusa motivoRecusa;
 
     public void devolver(double valorDevolvido) {
-        
         this.valor = this.valor - valorDevolvido;
-        
+
         if (this.valor == 0) {
             this.situacao = EmprestimoSituacao.QUITADO;
         }
-        
     }
 
     public void aprovar() {
         this.situacao = EmprestimoSituacao.APROVADO;
     }
-        
+
+    public void reprovar() {
+        this.situacao = EmprestimoSituacao.REPROVADO;
+    }
+
+    public void aguardarLimiteEmergencial() {
+        this.situacao = EmprestimoSituacao.AGUARDANDO_LIMITE_EMERGENCIAL;
+    }
+    
+    
+
 }

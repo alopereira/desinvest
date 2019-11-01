@@ -112,7 +112,7 @@ public class EmpresaApplicationService {
                 .empresaId(empresa.getId())
                 .dataHora(LocalDateTime.now())
                 .valor(cmd.getValor())
-                .tipo(TipoMovimentacao.APROVACAO_CREDITO_EMERGENCIAL)
+                .tipo(TipoMovimentacao.APROVACAO_LIMITE_EMERGENCIAL)
                 .build());
 
         return empresa.getLimiteConta();
