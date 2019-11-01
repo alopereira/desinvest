@@ -116,7 +116,10 @@ public class Empresa {
     }
 
     public ContaId getContaId() {
-        return this.conta.getId();
+        if (this.conta != null) {
+            return this.conta.getId();            
+        }
+        return null;
     }
     
     public double getLimiteConta() {

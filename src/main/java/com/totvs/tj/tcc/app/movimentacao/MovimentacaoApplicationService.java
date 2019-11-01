@@ -8,7 +8,10 @@ import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
 import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
 import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoRepository;
 
+import lombok.Builder;
+
 @Service
+@Builder
 public class MovimentacaoApplicationService {
     
     private MovimentacaoRepository movimentacaoRepository;
