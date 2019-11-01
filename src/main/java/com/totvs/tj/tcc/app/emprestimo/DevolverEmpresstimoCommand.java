@@ -1,6 +1,6 @@
 package com.totvs.tj.tcc.app.emprestimo;
 
-import com.totvs.tj.tcc.domain.empresa.EmpresaId;
+import com.totvs.tj.tcc.domain.emprestimo.EmprestimoId;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder
 public class DevolverEmpresstimoCommand {
     
-    private EmpresaId empresaId;
+    private EmprestimoId emprestimoId;
     
     private double valor;
 

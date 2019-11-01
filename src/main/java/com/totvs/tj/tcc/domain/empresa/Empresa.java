@@ -127,10 +127,4 @@ public class Empresa {
         return 0;
     }
     
-    public void devolverEmprestimo(double valor) {
-        
-        this.conta.reporSaldoDevedor(valor);
-        
-    }
-
 }

@@ -6,7 +6,9 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.totvs.tj.tcc.domain.conta.Conta;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
+import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
 import com.totvs.tj.tcc.domain.emprestimo.Emprestimo;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoId;
@@ -53,13 +55,31 @@ public class EmprestimoApplicationService {
         return emprestimo.getId();
     }
     
-    public void handle(DevolverEmpresstimoCommand cmd) {
+    @Transactional
+    public Movimentacao handle(DevolverEmpresstimoCommand cmd) {
         
-        Empresa empresa = this.empresaRepository.getOne(cmd.getEmpresaId());
+        Emprestimo emprestimo = this.emprestimoRepository.getOne(cmd.getEmprestimoId());        
+        emprestimo.devolver(cmd.getValor());        
+        emprestimoRepository.save(emprestimo);
         
-        empresa.devolverEmprestimo(cmd.getValor());
+        EmpresaId empresaId = emprestimo.getEmpresaId();
+        Empresa empresa = empresaRepository.getOne(empresaId);
+        Conta conta = empresa.getConta();
+        conta.reporSaldoDevedor(cmd.getValor());
+        empresaRepository.save(empresa);
         
+        Movimentacao movimentacao = Movimentacao.builder()
+                .id(MovimentacaoId.generate())
+                .contaId(empresa.getContaId())
+                .empresaId(empresa.getId())
+                .dataHora(LocalDateTime.now())
+                .valor(cmd.getValor())
+                .tipo(TipoMovimentacao.DEVOLUCAO)
+                .build();  
         
+        this.movimentacaoRepository.save(movimentacao);
+        
+        return movimentacao;        
     }
     
     

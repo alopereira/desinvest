@@ -13,6 +13,9 @@ import com.totvs.tj.tcc.app.empresa.SalvaEmpresaCommand;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
 import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
+import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
+import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
+import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoRepository;
 
 public class EmpresaTest {
 
@@ -40,7 +43,7 @@ public class EmpresaTest {
 
         // GIVEN
         EmpresaRepository repository = new EmpresaRepositoryMock();
-        EmpresaApplicationService service = new EmpresaApplicationService(repository);
+        EmpresaApplicationService service = new EmpresaApplicationService(repository, new MovimentacaoRepositoryMock());
 
         SalvaEmpresaCommand cmd = SalvaEmpresaCommand.builder()
                 .valor(50000)
@@ -67,6 +70,21 @@ public class EmpresaTest {
         @Override
         public Empresa getOne(EmpresaId id) {
             return empresas.get(id);
+        }
+    }
+    
+    static class MovimentacaoRepositoryMock implements MovimentacaoRepository {
+
+        private final Map<MovimentacaoId, Movimentacao> movimentacoes = new LinkedHashMap<>();
+
+        @Override
+        public void save(Movimentacao movimentacao) {
+            movimentacoes.put(movimentacao.getId(), movimentacao);
+        }
+
+        @Override
+        public Movimentacao getOne(MovimentacaoId id) {
+            return movimentacoes.get(id);
         }
     }
 }

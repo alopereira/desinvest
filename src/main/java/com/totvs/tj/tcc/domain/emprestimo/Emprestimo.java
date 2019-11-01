@@ -20,5 +20,16 @@ public class Emprestimo {
     private EmprestimoSituacao situacao;
     
     private EmprestimoMotivoRecusa motivoRecusa;
+
+    public void devolver(double valor) {
+        
+        this.valor = this.valor - valor;
+        
+        if (this.valor == 0) {
+            this.situacao = EmprestimoSituacao.QUITADO;
+        }
+        
+    }
     
+        
 }
