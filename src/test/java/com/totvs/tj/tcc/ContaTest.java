@@ -10,8 +10,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.totvs.tj.tcc.app.conta.AbrirContaCommand;
 import com.totvs.tj.tcc.app.conta.ContaApplicationService;
+import com.totvs.tj.tcc.app.empresa.AbrirContaCommand;
 import com.totvs.tj.tcc.app.empresa.EmpresaApplicationService;
 import com.totvs.tj.tcc.app.empresa.SuspenderEmpresaCommand;
 import com.totvs.tj.tcc.app.emprestimo.SolicitaCreditoEmergencialCommand;
