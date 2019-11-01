@@ -19,11 +19,11 @@ public class Conta {
         this.limite = limite;
     }
     
-    public void atualizarSaldoDevedor(double valor) {
+    public void aumentaSaldoDevedor(double valor) {
         this.saldo = this.saldo + valor;
     }
     
-    public void reporSaldoDevedor(double valor) {
+    public void reduzSaldoDevedor(double valor) {
         this.saldo = this.saldo - valor;
     }
 

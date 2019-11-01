@@ -19,6 +19,7 @@ import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
 import com.totvs.tj.tcc.domain.emprestimo.Emprestimo;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoId;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoRepository;
+import com.totvs.tj.tcc.domain.emprestimo.EmprestimoSituacao;
 import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
 import com.totvs.tj.tcc.domain.movimentacao.Movimentacao.TipoMovimentacao;
 import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
@@ -113,6 +114,60 @@ public class EmprestimoTest {
         assertTrue(conta.getSaldo() == 3000);
         assertTrue(movimentacao.getTipo() == TipoMovimentacao.DEVOLUCAO);
     }
+    
+    @Test
+    public void aoQuitarEmprestimo() {
+        
+     // GIVEN
+        Empresa empresa = Empresa.builder()
+                .id(empresaId)
+                .cnpj("9999999999")
+                .qtdFuncionarios(1500)
+                .valor(15000)
+                .responsaveId(responsavelId)
+                .build();
+
+        empresa.abrirConta();
+        empresaRepository.save(empresa);
+
+        EmprestimoApplicationService emprestimoApplication = EmprestimoApplicationService.builder()
+                .emprestimoRepository(emprestimoRepository)
+                .empresaRepository(empresaRepository)
+                .movimentacaoRepository(movimentacaoRepository)
+                .build();
+        
+        SolicitaEmprestimoCommand cmd = SolicitaEmprestimoCommand.builder()
+                .empresaId(empresaId)
+                .valor(5000)
+                .build();
+        
+        EmprestimoId emprestimoId = emprestimoApplication.handle(cmd);
+        
+        // WHEN
+        DevolverEmprestimoCommand cmdDevolver = DevolverEmprestimoCommand.builder()
+                .emprestimoId(emprestimoId)
+                .valor(2000)
+                .build();
+        
+        emprestimoApplication.handle(cmdDevolver);
+        
+        cmdDevolver = DevolverEmprestimoCommand.builder()
+                .emprestimoId(emprestimoId)
+                .valor(3000)
+                .build();
+        
+        Movimentacao movimentacao = emprestimoApplication.handle(cmdDevolver);
+        Emprestimo emprestimo = emprestimoRepository.getOne(emprestimoId);
+        
+        empresa = empresaRepository.getOne(empresaId);
+            
+        //THEN
+        Conta conta = empresa.getConta();
+        assertTrue(conta.getSaldo() == 0);
+        assertTrue(movimentacao.getTipo() == TipoMovimentacao.DEVOLUCAO);
+        assertTrue(emprestimo.getSituacao() == EmprestimoSituacao.QUITADO);
+        
+    }
 
     static class EmprestimoRepositoryMock implements EmprestimoRepository {
 
@@ -156,6 +211,12 @@ public class EmprestimoTest {
         @Override
         public Movimentacao getOne(MovimentacaoId id) {
             return movimentacoes.get(id);
+        }
+
+        @Override
+        public Map<MovimentacaoId, Movimentacao> getMovimentacaoPorEmpresa(EmpresaId empresaId) {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 }

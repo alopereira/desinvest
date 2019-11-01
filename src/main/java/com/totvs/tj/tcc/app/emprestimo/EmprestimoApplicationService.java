@@ -65,7 +65,7 @@ public class EmprestimoApplicationService {
         EmpresaId empresaId = emprestimo.getEmpresaId();
         Empresa empresa = empresaRepository.getOne(empresaId);
         Conta conta = empresa.getConta();
-        conta.reporSaldoDevedor(cmd.getValor());
+        conta.reduzSaldoDevedor(cmd.getValor());
         empresaRepository.save(empresa);
         
         Movimentacao movimentacao = Movimentacao.builder()

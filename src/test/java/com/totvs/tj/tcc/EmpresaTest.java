@@ -86,5 +86,11 @@ public class EmpresaTest {
         public Movimentacao getOne(MovimentacaoId id) {
             return movimentacoes.get(id);
         }
+
+        @Override
+        public Map<MovimentacaoId, Movimentacao> getMovimentacaoPorEmpresa(EmpresaId empresaId) {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 }
