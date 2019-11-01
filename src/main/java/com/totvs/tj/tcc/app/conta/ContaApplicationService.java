@@ -7,15 +7,11 @@ import org.springframework.stereotype.Service;
 import com.totvs.tj.tcc.domain.conta.ContaId;
 import com.totvs.tj.tcc.domain.conta.ContaRepository;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
-import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
 import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
 import com.totvs.tj.tcc.domain.movimentacao.Movimentacao.TipoMovimentacao;
 import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
 import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoRepository;
-import com.totvs.tj.tcc.domain.responsavel.Responsavel;
-import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
-import com.totvs.tj.tcc.domain.responsavel.ResponsavelRepository;
 
 import lombok.Builder;
 
@@ -25,16 +21,13 @@ public class ContaApplicationService {
 
     private ContaRepository contaRepository;
     private EmpresaRepository empresaRepository;
-    private ResponsavelRepository responsavelRepository;
     private MovimentacaoRepository movimentacaoRepository;
 
     public ContaApplicationService(ContaRepository contaRepository,
             EmpresaRepository empresaRepository,
-            ResponsavelRepository responsavelRepository,
             MovimentacaoRepository movimentacaoRepository) {
         this.contaRepository = contaRepository;
         this.empresaRepository = empresaRepository;
-        this.responsavelRepository = responsavelRepository;
         this.movimentacaoRepository = movimentacaoRepository;
     }
 
@@ -56,14 +49,6 @@ public class ContaApplicationService {
                 .build());
         
         return empresa.getContaId();
-    }
-
-    public Empresa getEmpresaById(EmpresaId empresaId) {
-        return empresaRepository.getOne(empresaId);
-    }
-
-    public Responsavel getResponsavelById(ResponsavelId responsavelId) {
-        return responsavelRepository.getOne(responsavelId);
     }
 
 }
