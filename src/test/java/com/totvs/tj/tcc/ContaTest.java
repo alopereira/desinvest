@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.totvs.tj.tcc.app.conta.ContaApplicationService;
 import com.totvs.tj.tcc.app.empresa.AbrirContaCommand;
 import com.totvs.tj.tcc.app.empresa.EmpresaApplicationService;
 import com.totvs.tj.tcc.app.empresa.SuspenderEmpresaCommand;
@@ -24,6 +23,9 @@ import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
 import com.totvs.tj.tcc.domain.emprestimo.Emprestimo;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoId;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoRepository;
+import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
+import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
+import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoRepository;
 import com.totvs.tj.tcc.domain.responsavel.Responsavel;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelRepository;
@@ -43,6 +45,8 @@ public class ContaTest {
     EmpresaRepository empresaRepository = new EmpresaRepositoryMock();
 
     EmprestimoRepository emprestimoRepository = new EmprestimoRepositoryMock();
+    
+    MovimentacaoRepository movimentacaoRepository = new MovimentacaoRepositoryMock();
 
     public void populaMocks() {
         responsavelRepository.save(Responsavel.builder()
@@ -78,14 +82,13 @@ public class ContaTest {
         this.populaMocks();
 
         // GIVEN
-        ContaApplicationService service = ContaApplicationService.builder()
+        EmpresaApplicationService service = EmpresaApplicationService.builder()
                 .contaRepository(contaRepository)
                 .empresaRepository(empresaRepository)
                 .build();
 
         AbrirContaCommand cmd = AbrirContaCommand.builder()
                 .empresaId(empresaId)
-                .responsavelId(responsavelId)
                 .build();
 
         // WHEN
@@ -101,14 +104,13 @@ public class ContaTest {
         // GIVEN
         this.populaMocks();
 
-        ContaApplicationService service = ContaApplicationService.builder()
+        EmpresaApplicationService service = EmpresaApplicationService.builder()
                 .contaRepository(contaRepository)
                 .empresaRepository(empresaRepository)
                 .build();
 
         AbrirContaCommand cmd = AbrirContaCommand.builder()
                 .empresaId(empresaId)
-                .responsavelId(responsavelId)
                 .build();
 
         // WHEN
@@ -126,6 +128,8 @@ public class ContaTest {
 
         EmpresaApplicationService service = EmpresaApplicationService.builder()
                 .empresaRepository(empresaRepository)
+                .movimentacaoRepository(movimentacaoRepository)
+                .contaRepository(contaRepository)
                 .build();
 
         empresaRepository.save(Empresa.builder()
@@ -163,14 +167,13 @@ public class ContaTest {
         // GIVEN
         this.populaMocks();
 
-        ContaApplicationService service = ContaApplicationService.builder()
+        EmpresaApplicationService service = EmpresaApplicationService.builder()
                 .contaRepository(contaRepository)
                 .empresaRepository(empresaRepository)
                 .build();
 
         AbrirContaCommand cmd = AbrirContaCommand.builder()
                 .empresaId(empresaId)
-                .responsavelId(responsavelId)
                 .build();
 
         // WHEN
@@ -269,6 +272,8 @@ public class ContaTest {
 
         EmpresaApplicationService empresaApplication = EmpresaApplicationService.builder()
                 .empresaRepository(empresaRepository)
+                .movimentacaoRepository(movimentacaoRepository)
+                .contaRepository(contaRepository)
                 .build();
         
         double limiteAntigo = empresa.getLimiteConta();
@@ -276,6 +281,27 @@ public class ContaTest {
         double novoLimite = empresaApplication.handle(cmd);
 
         assertTrue(novoLimite == limiteAntigo);
+    }
+    
+    static class MovimentacaoRepositoryMock implements MovimentacaoRepository {
+
+        private final Map<MovimentacaoId, Movimentacao> movimentacoes = new LinkedHashMap<>();
+
+        @Override
+        public void save(Movimentacao conta) {
+            movimentacoes.put(conta.getId(), conta);
+        }
+
+        @Override
+        public Movimentacao getOne(MovimentacaoId id) {
+            return movimentacoes.get(id);
+        }
+
+        @Override
+        public Map<MovimentacaoId, Movimentacao> getMovimentacaoPorEmpresa(EmpresaId empresaId) {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
     
     static class ContaRepositoryMock implements ContaRepository {
