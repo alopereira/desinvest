@@ -80,7 +80,6 @@ public class ContaTest {
         // GIVEN
         ContaApplicationService service = ContaApplicationService.builder()
                 .contaRepository(contaRepository)
-                .responsavelRepository(responsavelRepository)
                 .empresaRepository(empresaRepository)
                 .build();
 
@@ -91,13 +90,9 @@ public class ContaTest {
 
         // WHEN
         ContaId idConta = service.handle(cmd);
-        Empresa obterEmpresa = service.getEmpresaById(empresaId);
-        Responsavel obterResponsavel = service.getResponsavelById(responsavelId);
 
         // THEN
         assertNotNull(idConta);
-        assertNotNull(obterEmpresa);
-        assertNotNull(obterResponsavel);
     }
 
     @Test
@@ -109,7 +104,6 @@ public class ContaTest {
         ContaApplicationService service = ContaApplicationService.builder()
                 .contaRepository(contaRepository)
                 .empresaRepository(empresaRepository)
-                .responsavelRepository(responsavelRepository)
                 .build();
 
         AbrirContaCommand cmd = AbrirContaCommand.builder()
@@ -119,13 +113,9 @@ public class ContaTest {
 
         // WHEN
         ContaId idConta = service.handle(cmd);
-        Empresa obterEmpresa = service.getEmpresaById(empresaId);
-        Responsavel obterResponsavel = service.getResponsavelById(responsavelId);
 
         // THEN
         assertNotNull(idConta);
-        assertNotNull(obterEmpresa);
-        assertNotNull(obterResponsavel);
     }
 
     @Test
@@ -175,7 +165,6 @@ public class ContaTest {
 
         ContaApplicationService service = ContaApplicationService.builder()
                 .contaRepository(contaRepository)
-                .responsavelRepository(responsavelRepository)
                 .empresaRepository(empresaRepository)
                 .build();
 
@@ -186,13 +175,9 @@ public class ContaTest {
 
         // WHEN
         ContaId idConta = service.handle(cmd);
-        Empresa obterEmpresa = service.getEmpresaById(empresaId);
-        Responsavel obterResponsavel = service.getResponsavelById(responsavelId);
 
         // THEN
         assertTrue(contaRepository.getOne(idConta).getSaldo() == 0);
-        assertNotNull(obterEmpresa);
-        assertNotNull(obterResponsavel);
 
     }
 
