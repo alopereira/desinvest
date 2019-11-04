@@ -1,5 +1,8 @@
 package com.totvs.tj.tcc.domain.emprestimo;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 
 import lombok.Builder;
@@ -9,6 +12,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @Builder
+@Entity
 public class Emprestimo {
 
     private EmprestimoId id;
@@ -20,6 +24,11 @@ public class Emprestimo {
     private EmprestimoSituacao situacao;
 
     private EmprestimoMotivoRecusa motivoRecusa;
+    
+    @Id
+    public String getIdValue() {
+        return this.id.getValue();
+    }
 
     public void devolver(double valorDevolvido) {
         this.valor = this.valor - valorDevolvido;

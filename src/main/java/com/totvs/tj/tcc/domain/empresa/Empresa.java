@@ -2,6 +2,9 @@ package com.totvs.tj.tcc.domain.empresa;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 import com.totvs.tj.tcc.domain.conta.Conta;
 import com.totvs.tj.tcc.domain.conta.ContaId;
 import com.totvs.tj.tcc.domain.emprestimo.Emprestimo;
@@ -18,6 +21,7 @@ import lombok.ToString;
 @ToString
 @Builder
 @AllArgsConstructor(access = PRIVATE)
+@Entity
 public class Empresa {
 
     private EmpresaId id;
@@ -35,6 +39,11 @@ public class Empresa {
     private int solicitacaoAumentoCredito;
 
     private Situacao situacao;
+    
+    @Id
+    public String getIdValue() {
+        return this.id.getValue();
+    }
 
     protected double calculaLimiteParaAberturaConta() {
 
@@ -117,7 +126,7 @@ public class Empresa {
 
     public ContaId getContaId() {
         if (this.conta != null) {
-            return this.conta.getId();            
+            return this.conta.getId();
         }
         return null;
     }

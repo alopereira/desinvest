@@ -4,6 +4,9 @@ import static lombok.AccessLevel.PRIVATE;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 import com.totvs.tj.tcc.domain.conta.ContaId;
 import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
@@ -17,6 +20,7 @@ import lombok.ToString;
 @ToString
 @Builder
 @AllArgsConstructor(access = PRIVATE)
+@Entity
 public class Movimentacao {
     
     private MovimentacaoId id;
@@ -32,6 +36,11 @@ public class Movimentacao {
     private TipoMovimentacao tipo;
     
     private LocalDateTime dataHora;
+    
+    @Id
+    public String getIdValue() {
+        return this.id.getValue();
+    }
     
     
     public enum TipoMovimentacao {

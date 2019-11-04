@@ -8,7 +8,8 @@ import lombok.Value;
 @Value
 @AllArgsConstructor(staticName = "from")
 public class ResponsavelId {
-
+    
+    
     private String value;
 
     /**
