@@ -105,7 +105,7 @@ public class EmprestimoApplicationService {
         return movimentacao;          
     }
 
-    public Movimentacao handle(ReprovarSolicitacaoEmprestimo cmdReprovar) {
+    public Movimentacao handle(ReprovarSolicitacaoEmprestimoCommand cmdReprovar) {
         
         Emprestimo emprestimo = this.emprestimoRepository.getOne(cmdReprovar.getEmprestimoId());     
         

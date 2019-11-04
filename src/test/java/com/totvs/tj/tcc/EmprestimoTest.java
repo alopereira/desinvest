@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.totvs.tj.tcc.app.emprestimo.AprovarSolicitacaoEmprestimoCommand;
 import com.totvs.tj.tcc.app.emprestimo.DevolverEmprestimoCommand;
 import com.totvs.tj.tcc.app.emprestimo.EmprestimoApplicationService;
-import com.totvs.tj.tcc.app.emprestimo.ReprovarSolicitacaoEmprestimo;
+import com.totvs.tj.tcc.app.emprestimo.ReprovarSolicitacaoEmprestimoCommand;
 import com.totvs.tj.tcc.app.emprestimo.SolicitaEmprestimoCommand;
 import com.totvs.tj.tcc.domain.conta.Conta;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
@@ -279,7 +279,7 @@ public class EmprestimoTest {
         
         EmprestimoId emprestimoId = emprestimoApplication.handle(cmd);
         
-        ReprovarSolicitacaoEmprestimo cmdReprovar = ReprovarSolicitacaoEmprestimo.builder()
+        ReprovarSolicitacaoEmprestimoCommand cmdReprovar = ReprovarSolicitacaoEmprestimoCommand.builder()
                 .emprestimoId(emprestimoId)
                 .build();
         
