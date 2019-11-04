@@ -13,16 +13,12 @@ import lombok.ToString;
 @Entity
 public class Conta {
     
+    @Id
     private ContaId id;
     
     private double saldo;
 
     private double limite;
-    
-    @Id
-    public String getIdValue() {
-        return this.id.getValue();
-    }
     
     public void ajustaLimite(double limite) {
         this.limite = limite;

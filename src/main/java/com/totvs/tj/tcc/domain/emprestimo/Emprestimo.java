@@ -15,6 +15,7 @@ import lombok.ToString;
 @Entity
 public class Emprestimo {
 
+    @Id
     private EmprestimoId id;
 
     private EmpresaId empresaId;
@@ -24,11 +25,6 @@ public class Emprestimo {
     private EmprestimoSituacao situacao;
 
     private EmprestimoMotivoRecusa motivoRecusa;
-    
-    @Id
-    public String getIdValue() {
-        return this.id.getValue();
-    }
 
     public void devolver(double valorDevolvido) {
         this.valor = this.valor - valorDevolvido;

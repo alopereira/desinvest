@@ -24,6 +24,7 @@ import lombok.ToString;
 @Entity
 public class Empresa {
 
+    @Id
     private EmpresaId id;
 
     private ResponsavelId responsaveId;
@@ -39,11 +40,6 @@ public class Empresa {
     private int solicitacaoAumentoCredito;
 
     private Situacao situacao;
-    
-    @Id
-    public String getIdValue() {
-        return this.id.getValue();
-    }
 
     protected double calculaLimiteParaAberturaConta() {
 

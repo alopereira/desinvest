@@ -17,14 +17,10 @@ import lombok.ToString;
 @AllArgsConstructor(access = PRIVATE)
 public class Responsavel {
     
-    
+    @Id
     private ResponsavelId id;
     
     private String supervisor;
     
-    @Id
-    public String getIdValue() {
-        return this.id.getValue();
-    }
     
 }
