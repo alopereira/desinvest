@@ -1,9 +1,9 @@
 package com.totvs.tj.tcc.domain.emprestimo;
 
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
-import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -16,15 +16,19 @@ import lombok.ToString;
 public class Emprestimo {
 
     @Id
-    private EmprestimoId id;
+    private String id;
 
-    private EmpresaId empresaId;
+    private String empresaId;
 
     private double valor;
 
     private EmprestimoSituacao situacao;
 
     private EmprestimoMotivoRecusa motivoRecusa;
+    
+    public static String generate() {
+        return UUID.randomUUID().toString();
+    }
 
     public void devolver(double valorDevolvido) {
         this.valor = this.valor - valorDevolvido;

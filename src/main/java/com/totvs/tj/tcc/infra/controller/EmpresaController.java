@@ -21,8 +21,8 @@ public class EmpresaController {
     @ApiOperation(value = "Cria empresa",
             notes = "Cria uma empresa nova no sistema",
             response = EmpresaId.class)
-    public EmpresaId activate(@RequestBody SalvaEmpresaCommand cmd) {
-        EmpresaId empresaId = EmpresaApplicationService.builder()
+    public String activate(@RequestBody SalvaEmpresaCommand cmd) {
+        String empresaId = EmpresaApplicationService.builder()
                 .build().handle(cmd);
 
         return empresaId;

@@ -3,13 +3,10 @@ package com.totvs.tj.tcc.domain.movimentacao;
 import static lombok.AccessLevel.PRIVATE;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
-import com.totvs.tj.tcc.domain.conta.ContaId;
-import com.totvs.tj.tcc.domain.empresa.EmpresaId;
-import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,23 +20,23 @@ import lombok.ToString;
 @Entity
 public class Movimentacao {
     
-    private MovimentacaoId id;
+    @Id
+    private String id;
     
-    private EmpresaId empresaId;
+    private String empresaId;
     
     private double valor;
     
-    private ContaId contaId;
+    private String contaId;
     
-    private ResponsavelId responsavelId;
+    private String responsavelId;
     
     private TipoMovimentacao tipo;
     
     private LocalDateTime dataHora;
     
-    @Id
-    public String getIdValue() {
-        return this.id.getValue();
+    public static String generate() {
+        return UUID.randomUUID().toString();
     }
     
     

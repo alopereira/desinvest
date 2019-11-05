@@ -13,12 +13,10 @@ import com.totvs.tj.tcc.app.empresa.SalvaEmpresaCommand;
 import com.totvs.tj.tcc.app.movimentacao.ConsultaMovimentacaoPorEmpresalCommand;
 import com.totvs.tj.tcc.app.movimentacao.MovimentacaoApplicationService;
 import com.totvs.tj.tcc.domain.conta.ContaRepository;
-import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
 import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
-import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
 import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoRepository;
-import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
+import com.totvs.tj.tcc.domain.responsavel.Responsavel;
 
 public class MovimentacaoTest {
 
@@ -36,8 +34,8 @@ public class MovimentacaoTest {
     public void aoMovimentacoesPorEmpresa() throws Exception {
         // GIVEN
 
-        EmpresaId empresaId = empresaApplication.handle(SalvaEmpresaCommand.builder()
-                .responsavel(ResponsavelId.generate())
+        String empresaId = empresaApplication.handle(SalvaEmpresaCommand.builder()
+                .responsavelId(Responsavel.generate())
                 .qtdFuncionarios(1000)
                 .valor(40000)
                 .build());
@@ -52,7 +50,7 @@ public class MovimentacaoTest {
                 .movimentacaoRepository(movimentacaoRepository)
                 .build();
 
-        Map<MovimentacaoId, Movimentacao> movimentacoes = movimentacaoApplication.handle(consultaCmd);
+        Map<String, Movimentacao> movimentacoes = movimentacaoApplication.handle(consultaCmd);
 
         // THEN
         assertTrue(movimentacoes.size() == 1);
@@ -63,8 +61,8 @@ public class MovimentacaoTest {
     public void aoMovimentacoesPorEmpresaAbrirConta() throws Exception {
         // GIVEN
 
-        EmpresaId empresaId = empresaApplication.handle(SalvaEmpresaCommand.builder()
-                .responsavel(ResponsavelId.generate())
+        String empresaId = empresaApplication.handle(SalvaEmpresaCommand.builder()
+                .responsavelId(Responsavel.generate())
                 .qtdFuncionarios(1000)
                 .valor(40000)
                 .build());
@@ -83,7 +81,7 @@ public class MovimentacaoTest {
                 .movimentacaoRepository(movimentacaoRepository)
                 .build();
 
-        Map<MovimentacaoId, Movimentacao> movimentacoes = movimentacaoApplication.handle(consultaCmd);
+        Map<String, Movimentacao> movimentacoes = movimentacaoApplication.handle(consultaCmd);
 
         // THEN
 
@@ -93,7 +91,7 @@ public class MovimentacaoTest {
 
     static class MovimentacaoRepositoryMock implements MovimentacaoRepository {
 
-        private final Map<MovimentacaoId, Movimentacao> movimentacoes = new LinkedHashMap<>();
+        private final Map<String, Movimentacao> movimentacoes = new LinkedHashMap<>();
 
         @Override
         public void save(Movimentacao movimentacao) {
@@ -101,14 +99,14 @@ public class MovimentacaoTest {
         }
 
         @Override
-        public Movimentacao getOne(MovimentacaoId id) {
+        public Movimentacao getOne(String id) {
             return movimentacoes.get(id);
         }
 
         @Override
-        public Map<MovimentacaoId, Movimentacao> getMovimentacaoPorEmpresa(EmpresaId empresaId) {
-            Map<MovimentacaoId, Movimentacao> movimentosPorEmpresa = new LinkedHashMap<>();
-            for (Map.Entry<MovimentacaoId, Movimentacao> entry : movimentacoes.entrySet()) {
+        public Map<String, Movimentacao> getMovimentacaoPorEmpresa(String empresaId) {
+            Map<String, Movimentacao> movimentosPorEmpresa = new LinkedHashMap<>();
+            for (Map.Entry<String, Movimentacao> entry : movimentacoes.entrySet()) {
                 Movimentacao movimentacao = entry.getValue();
                 if (movimentacao.getEmpresaId().equals(empresaId)) {
                     movimentosPorEmpresa.put(entry.getKey(), entry.getValue());

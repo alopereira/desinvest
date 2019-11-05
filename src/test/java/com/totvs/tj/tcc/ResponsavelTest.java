@@ -11,12 +11,11 @@ import org.junit.Test;
 import com.totvs.tj.tcc.app.responsavel.ResponsavelApplicationService;
 import com.totvs.tj.tcc.app.responsavel.SalvaResponsavelCommand;
 import com.totvs.tj.tcc.domain.responsavel.Responsavel;
-import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelRepository;
 
 public class ResponsavelTest {
 
-    private final ResponsavelId idResponsavel = ResponsavelId.generate();
+    private final String idResponsavel = Responsavel.generate();
 
     @Test
     public void aoCriarUmResponsavel() throws Exception {
@@ -45,7 +44,7 @@ public class ResponsavelTest {
                 .build();
 
         // WHEN
-        ResponsavelId idResponsavel = service.handle(cmd);
+        String idResponsavel = service.handle(cmd);
 
         // THEN
         assertNotNull(idResponsavel);
@@ -54,7 +53,7 @@ public class ResponsavelTest {
 
     static class ResponsavelRepositoryMock implements ResponsavelRepository {
 
-        private final Map<ResponsavelId, Responsavel> responsaveis = new LinkedHashMap<>();
+        private final Map<String, Responsavel> responsaveis = new LinkedHashMap<>();
 
         @Override
         public void save(Responsavel responsavel) {
@@ -62,7 +61,7 @@ public class ResponsavelTest {
         }
 
         @Override
-        public Responsavel getOne(ResponsavelId id) {
+        public Responsavel getOne(String id) {
             return responsaveis.get(id);
         }
     }

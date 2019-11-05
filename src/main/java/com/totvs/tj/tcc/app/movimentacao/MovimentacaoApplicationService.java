@@ -5,7 +5,6 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
-import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
 import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoRepository;
 
 import lombok.Builder;
@@ -20,7 +19,7 @@ public class MovimentacaoApplicationService {
         this.movimentacaoRepository = movimentacaoRepository;
     }
     
-    public Map<MovimentacaoId, Movimentacao> handle(ConsultaMovimentacaoPorEmpresalCommand cmd) {
+    public Map<String, Movimentacao> handle(ConsultaMovimentacaoPorEmpresalCommand cmd) {
         return this.movimentacaoRepository.getMovimentacaoPorEmpresa(cmd.getEmpresaId());
     }
     

@@ -15,28 +15,23 @@ import com.totvs.tj.tcc.app.empresa.EmpresaApplicationService;
 import com.totvs.tj.tcc.app.empresa.SuspenderEmpresaCommand;
 import com.totvs.tj.tcc.app.emprestimo.SolicitaCreditoEmergencialCommand;
 import com.totvs.tj.tcc.domain.conta.Conta;
-import com.totvs.tj.tcc.domain.conta.ContaId;
 import com.totvs.tj.tcc.domain.conta.ContaRepository;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
-import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
 import com.totvs.tj.tcc.domain.emprestimo.Emprestimo;
-import com.totvs.tj.tcc.domain.emprestimo.EmprestimoId;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoRepository;
 import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
-import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
 import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoRepository;
 import com.totvs.tj.tcc.domain.responsavel.Responsavel;
-import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 import com.totvs.tj.tcc.domain.responsavel.ResponsavelRepository;
 
 public class ContaTest {
 
-    private final ContaId idConta = ContaId.generate();
+    private final String idConta = Conta.generate();
 
-    private final EmpresaId empresaId = EmpresaId.generate();
+    private final String empresaId = Empresa.generate();
 
-    private final ResponsavelId responsavelId = ResponsavelId.generate();
+    private final String responsavelId = Responsavel.generate();
 
     ContaRepository contaRepository = new ContaRepositoryMock();
 
@@ -93,7 +88,7 @@ public class ContaTest {
                 .build();
 
         // WHEN
-        ContaId idConta = service.handle(cmd);
+        String idConta = service.handle(cmd);
 
         // THEN
         assertNotNull(idConta);
@@ -116,7 +111,7 @@ public class ContaTest {
                 .build();
 
         // WHEN
-        ContaId idConta = service.handle(cmd);
+        String idConta = service.handle(cmd);
 
         // THEN
         assertNotNull(idConta);
@@ -181,7 +176,7 @@ public class ContaTest {
                 .build();
 
         // WHEN
-        ContaId idConta = service.handle(cmd);
+        String idConta = service.handle(cmd);
 
         // THEN
         assertTrue(contaRepository.getOne(idConta).getSaldo() == 0);
@@ -291,7 +286,7 @@ public class ContaTest {
     
     static class MovimentacaoRepositoryMock implements MovimentacaoRepository {
 
-        private final Map<MovimentacaoId, Movimentacao> movimentacoes = new LinkedHashMap<>();
+        private final Map<String, Movimentacao> movimentacoes = new LinkedHashMap<>();
 
         @Override
         public void save(Movimentacao conta) {
@@ -299,12 +294,12 @@ public class ContaTest {
         }
 
         @Override
-        public Movimentacao getOne(MovimentacaoId id) {
+        public Movimentacao getOne(String id) {
             return movimentacoes.get(id);
         }
 
         @Override
-        public Map<MovimentacaoId, Movimentacao> getMovimentacaoPorEmpresa(EmpresaId empresaId) {
+        public Map<String, Movimentacao> getMovimentacaoPorEmpresa(String empresaId) {
             // TODO Auto-generated method stub
             return null;
         }
@@ -312,7 +307,7 @@ public class ContaTest {
     
     static class ContaRepositoryMock implements ContaRepository {
 
-        private final Map<ContaId, Conta> contas = new LinkedHashMap<>();
+        private final Map<String, Conta> contas = new LinkedHashMap<>();
 
         @Override
         public void save(Conta conta) {
@@ -320,14 +315,14 @@ public class ContaTest {
         }
 
         @Override
-        public Conta getOne(ContaId id) {
+        public Conta getOne(String id) {
             return contas.get(id);
         }
     }
 
     static class EmprestimoRepositoryMock implements EmprestimoRepository {
 
-        private final Map<EmprestimoId, Emprestimo> emprestimos = new LinkedHashMap<>();
+        private final Map<String, Emprestimo> emprestimos = new LinkedHashMap<>();
 
         @Override
         public void save(Emprestimo emprestimo) {
@@ -335,14 +330,14 @@ public class ContaTest {
         }
 
         @Override
-        public Emprestimo getOne(EmprestimoId id) {
+        public Emprestimo getOne(String id) {
             return emprestimos.get(id);
         }
     }
 
     static class EmpresaRepositoryMock implements EmpresaRepository {
 
-        private final Map<EmpresaId, Empresa> empresas = new LinkedHashMap<>();
+        private final Map<String, Empresa> empresas = new LinkedHashMap<>();
 
         @Override
         public void save(Empresa empresa) {
@@ -350,14 +345,14 @@ public class ContaTest {
         }
 
         @Override
-        public Empresa getOne(EmpresaId id) {
+        public Empresa getOne(String id) {
             return empresas.get(id);
         }
     }
 
     static class ResponsavelRepositoryMock implements ResponsavelRepository {
 
-        private final Map<ResponsavelId, Responsavel> responsaveis = new LinkedHashMap<>();
+        private final Map<String, Responsavel> responsaveis = new LinkedHashMap<>();
 
         @Override
         public void save(Responsavel responsavel) {
@@ -365,7 +360,7 @@ public class ContaTest {
         }
 
         @Override
-        public Responsavel getOne(ResponsavelId id) {
+        public Responsavel getOne(String id) {
             return responsaveis.get(id);
         }
     }

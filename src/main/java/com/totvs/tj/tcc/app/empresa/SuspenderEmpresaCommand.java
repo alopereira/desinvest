@@ -1,7 +1,5 @@
 package com.totvs.tj.tcc.app.empresa;
 
-import com.totvs.tj.tcc.domain.empresa.EmpresaId;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -9,6 +7,6 @@ import lombok.Data;
 @AllArgsConstructor(staticName = "from")
 public class SuspenderEmpresaCommand {
 
-    private EmpresaId empresa;
+    private String empresa;
     
 }

@@ -16,22 +16,19 @@ import com.totvs.tj.tcc.app.emprestimo.ReprovarSolicitacaoEmprestimoCommand;
 import com.totvs.tj.tcc.app.emprestimo.SolicitaEmprestimoCommand;
 import com.totvs.tj.tcc.domain.conta.Conta;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
-import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
 import com.totvs.tj.tcc.domain.emprestimo.Emprestimo;
-import com.totvs.tj.tcc.domain.emprestimo.EmprestimoId;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoRepository;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoSituacao;
 import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
 import com.totvs.tj.tcc.domain.movimentacao.Movimentacao.TipoMovimentacao;
-import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
 import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoRepository;
-import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
+import com.totvs.tj.tcc.domain.responsavel.Responsavel;
 
 public class EmprestimoTest {
 
-    private final EmpresaId empresaId = EmpresaId.generate();
-    private final ResponsavelId responsavelId = ResponsavelId.generate();
+    private final String empresaId = Empresa.generate();
+    private final String responsavelId = Responsavel.generate();
     
     EmprestimoRepository emprestimoRepository = new EmprestimoRepositoryMock();
     EmpresaRepository empresaRepository = new EmpresaRepositoryMock();
@@ -64,7 +61,7 @@ public class EmprestimoTest {
                 .valor(10)
                 .build();
         
-        EmprestimoId emprestimoId = emprestimoApplication.handle(cmd);
+        String emprestimoId = emprestimoApplication.handle(cmd);
         
         Emprestimo emprestimo = emprestimoRepository.getOne(emprestimoId);
 
@@ -100,7 +97,7 @@ public class EmprestimoTest {
                 .valor(5000)
                 .build();
         
-        EmprestimoId emprestimoId = emprestimoApplication.handle(cmd);
+        String emprestimoId = emprestimoApplication.handle(cmd);
         
         // WHEN
         DevolverEmprestimoCommand cmdDevolver = DevolverEmprestimoCommand.builder()
@@ -144,7 +141,7 @@ public class EmprestimoTest {
                 .valor(5000)
                 .build();
         
-        EmprestimoId emprestimoId = emprestimoApplication.handle(cmd);
+        String emprestimoId = emprestimoApplication.handle(cmd);
         
         // WHEN
         DevolverEmprestimoCommand cmdDevolver = DevolverEmprestimoCommand.builder()
@@ -199,7 +196,7 @@ public class EmprestimoTest {
                 .valor(999999)
                 .build();
         
-        EmprestimoId emprestimoId = emprestimoApplication.handle(cmd);
+        String emprestimoId = emprestimoApplication.handle(cmd);
         
         Emprestimo emprestimo = emprestimoRepository.getOne(emprestimoId);
 
@@ -236,7 +233,7 @@ public class EmprestimoTest {
                 .valor(999999)
                 .build();
         
-        EmprestimoId emprestimoId = emprestimoApplication.handle(cmd);
+        String emprestimoId = emprestimoApplication.handle(cmd);
         
         AprovarSolicitacaoEmprestimoCommand cmdAprovar = AprovarSolicitacaoEmprestimoCommand.builder()
                 .emprestimoId(emprestimoId)
@@ -277,7 +274,7 @@ public class EmprestimoTest {
                 .valor(999999)
                 .build();
         
-        EmprestimoId emprestimoId = emprestimoApplication.handle(cmd);
+        String emprestimoId = emprestimoApplication.handle(cmd);
         
         ReprovarSolicitacaoEmprestimoCommand cmdReprovar = ReprovarSolicitacaoEmprestimoCommand.builder()
                 .emprestimoId(emprestimoId)
@@ -293,7 +290,7 @@ public class EmprestimoTest {
 
     static class EmprestimoRepositoryMock implements EmprestimoRepository {
 
-        private final Map<EmprestimoId, Emprestimo> emprestimos = new LinkedHashMap<>();
+        private final Map<String, Emprestimo> emprestimos = new LinkedHashMap<>();
 
         @Override
         public void save(Emprestimo emprestimo) {
@@ -301,14 +298,14 @@ public class EmprestimoTest {
         }
 
         @Override
-        public Emprestimo getOne(EmprestimoId id) {
+        public Emprestimo getOne(String id) {
             return emprestimos.get(id);
         }
     }
 
     static class EmpresaRepositoryMock implements EmpresaRepository {
 
-        private final Map<EmpresaId, Empresa> empresas = new LinkedHashMap<>();
+        private final Map<String, Empresa> empresas = new LinkedHashMap<>();
 
         @Override
         public void save(Empresa empresa) {
@@ -316,14 +313,14 @@ public class EmprestimoTest {
         }
 
         @Override
-        public Empresa getOne(EmpresaId id) {
+        public Empresa getOne(String id) {
             return empresas.get(id);
         }
     }
     
     static class MovimentacaoRepositoryMock implements MovimentacaoRepository {
 
-        private final Map<MovimentacaoId, Movimentacao> movimentacoes = new LinkedHashMap<>();
+        private final Map<String, Movimentacao> movimentacoes = new LinkedHashMap<>();
 
         @Override
         public void save(Movimentacao movimentacao) {
@@ -331,12 +328,12 @@ public class EmprestimoTest {
         }
 
         @Override
-        public Movimentacao getOne(MovimentacaoId id) {
+        public Movimentacao getOne(String id) {
             return movimentacoes.get(id);
         }
 
         @Override
-        public Map<MovimentacaoId, Movimentacao> getMovimentacaoPorEmpresa(EmpresaId empresaId) {
+        public Map<String, Movimentacao> getMovimentacaoPorEmpresa(String empresaId) {
             // TODO Auto-generated method stub
             return null;
         }

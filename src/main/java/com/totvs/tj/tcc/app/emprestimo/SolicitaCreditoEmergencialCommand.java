@@ -1,7 +1,5 @@
 package com.totvs.tj.tcc.app.emprestimo;
 
-import com.totvs.tj.tcc.domain.empresa.EmpresaId;
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,7 +7,7 @@ import lombok.Data;
 @Builder
 public class SolicitaCreditoEmergencialCommand {
     
-    private EmpresaId empresaId;
+    private String empresaId;
     private double valor;
     
 }

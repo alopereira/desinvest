@@ -1,5 +1,7 @@
 package com.totvs.tj.tcc.domain.conta;
 
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -14,7 +16,7 @@ import lombok.ToString;
 public class Conta {
     
     @Id
-    private ContaId id;
+    private String id;
     
     private double saldo;
 
@@ -30,6 +32,10 @@ public class Conta {
     
     public void reduzSaldoDevedor(double valor) {
         this.saldo = this.saldo - valor;
+    }
+    
+    public static String generate() {
+        return UUID.randomUUID().toString();
     }
 
 }

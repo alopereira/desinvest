@@ -1,7 +1,5 @@
 package com.totvs.tj.tcc.app.emprestimo;
 
-import com.totvs.tj.tcc.domain.emprestimo.EmprestimoId;
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,6 +7,6 @@ import lombok.Data;
 @Builder
 public class AprovarSolicitacaoEmprestimoCommand {
     
-    private EmprestimoId emprestimoId;
+    private String emprestimoId;
 
 }

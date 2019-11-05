@@ -4,6 +4,6 @@ public interface EmpresaRepository {
 
     void save(Empresa empresa);
     
-    Empresa getOne(EmpresaId id);
+    Empresa getOne(String id);
     
 }

@@ -13,15 +13,13 @@ import com.totvs.tj.tcc.app.empresa.EmpresaApplicationService;
 import com.totvs.tj.tcc.app.empresa.SalvaEmpresaCommand;
 import com.totvs.tj.tcc.domain.conta.ContaRepository;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
-import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
 import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
-import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
 import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoRepository;
 
 public class EmpresaTest {
 
-    private final EmpresaId idEmpresa = EmpresaId.generate();
+    private final String idEmpresa = Empresa.generate();
     
     EmpresaRepository empresaRepository = new EmpresaRepositoryMock();
     
@@ -62,7 +60,7 @@ public class EmpresaTest {
                 .build();
 
         // WHEN
-        EmpresaId idEmpresa = service.handle(cmd);
+        String idEmpresa = service.handle(cmd);
 
         // THEN
         assertNotNull(idEmpresa);
@@ -71,7 +69,7 @@ public class EmpresaTest {
 
     static class EmpresaRepositoryMock implements EmpresaRepository {
 
-        private final Map<EmpresaId, Empresa> empresas = new LinkedHashMap<>();
+        private final Map<String, Empresa> empresas = new LinkedHashMap<>();
 
         @Override
         public void save(Empresa empresa) {
@@ -79,14 +77,14 @@ public class EmpresaTest {
         }
 
         @Override
-        public Empresa getOne(EmpresaId id) {
+        public Empresa getOne(String id) {
             return empresas.get(id);
         }
     }
     
     static class MovimentacaoRepositoryMock implements MovimentacaoRepository {
 
-        private final Map<MovimentacaoId, Movimentacao> movimentacoes = new LinkedHashMap<>();
+        private final Map<String, Movimentacao> movimentacoes = new LinkedHashMap<>();
 
         @Override
         public void save(Movimentacao movimentacao) {
@@ -94,12 +92,12 @@ public class EmpresaTest {
         }
 
         @Override
-        public Movimentacao getOne(MovimentacaoId id) {
+        public Movimentacao getOne(String id) {
             return movimentacoes.get(id);
         }
 
         @Override
-        public Map<MovimentacaoId, Movimentacao> getMovimentacaoPorEmpresa(EmpresaId empresaId) {
+        public Map<String, Movimentacao> getMovimentacaoPorEmpresa(String empresaId) {
             // TODO Auto-generated method stub
             return null;
         }

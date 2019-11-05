@@ -4,6 +4,6 @@ public interface ResponsavelRepository {
 
     void save(Responsavel responsavel);
     
-    Responsavel getOne(ResponsavelId id);
+    Responsavel getOne(String id);
     
 }

@@ -1,7 +1,5 @@
 package com.totvs.tj.tcc.app.empresa;
 
-import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,7 +7,7 @@ import lombok.Data;
 @Builder
 public class SalvaEmpresaCommand {
     
-    private ResponsavelId responsavel;
+    private String responsavelId;
     private double valor;
     private double qtdFuncionarios;
     

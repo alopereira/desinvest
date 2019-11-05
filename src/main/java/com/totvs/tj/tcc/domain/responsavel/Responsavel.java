@@ -2,6 +2,8 @@ package com.totvs.tj.tcc.domain.responsavel;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -18,9 +20,13 @@ import lombok.ToString;
 public class Responsavel {
     
     @Id
-    private ResponsavelId id;
+    private String id;
     
     private String supervisor;
+    
+    public static String generate() {
+        return UUID.randomUUID().toString();
+    }
     
     
 }

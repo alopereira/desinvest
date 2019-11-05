@@ -7,14 +7,11 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.totvs.tj.tcc.app.emprestimo.SolicitaCreditoEmergencialCommand;
-import com.totvs.tj.tcc.domain.conta.ContaId;
 import com.totvs.tj.tcc.domain.conta.ContaRepository;
 import com.totvs.tj.tcc.domain.empresa.Empresa;
-import com.totvs.tj.tcc.domain.empresa.EmpresaId;
 import com.totvs.tj.tcc.domain.empresa.EmpresaRepository;
 import com.totvs.tj.tcc.domain.movimentacao.Movimentacao;
 import com.totvs.tj.tcc.domain.movimentacao.Movimentacao.TipoMovimentacao;
-import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoId;
 import com.totvs.tj.tcc.domain.movimentacao.MovimentacaoRepository;
 
 import lombok.Builder;
@@ -36,9 +33,9 @@ public class EmpresaApplicationService {
     }
 
     @Transactional
-    public EmpresaId handle(SalvaEmpresaCommand cmd) {
+    public String handle(SalvaEmpresaCommand cmd) {
 
-        EmpresaId idEmpresa = EmpresaId.generate();
+        String idEmpresa = Empresa.generate();
 
         Empresa empresa = Empresa.builder()
                 .id(idEmpresa)
@@ -49,7 +46,7 @@ public class EmpresaApplicationService {
         this.empresaRepository.save(empresa);
 
         this.movimentacaoRepository.save(Movimentacao.builder()
-                .id(MovimentacaoId.generate())
+                .id(Movimentacao.generate())
                 .contaId(empresa.getContaId())
                 .empresaId(empresa.getId())
                 .dataHora(LocalDateTime.now())
@@ -61,7 +58,7 @@ public class EmpresaApplicationService {
     }
 
     @Transactional
-    public ContaId handle(AbrirContaCommand cmd) {
+    public String handle(AbrirContaCommand cmd) {
 
         Empresa empresa = this.empresaRepository.getOne(cmd.getEmpresaId());
 
@@ -70,7 +67,7 @@ public class EmpresaApplicationService {
         this.empresaRepository.save(empresa);
         this.contaRepository.save(empresa.getConta());
         this.movimentacaoRepository.save(Movimentacao.builder()
-                .id(MovimentacaoId.generate())
+                .id(Movimentacao.generate())
                 .contaId(empresa.getContaId())
                 .empresaId(empresa.getId())
                 .dataHora(LocalDateTime.now())
@@ -91,7 +88,7 @@ public class EmpresaApplicationService {
         this.empresaRepository.save(empresa);
 
         this.movimentacaoRepository.save(Movimentacao.builder()
-                .id(MovimentacaoId.generate())
+                .id(Movimentacao.generate())
                 .contaId(empresa.getContaId())
                 .empresaId(empresa.getId())
                 .dataHora(LocalDateTime.now())
@@ -107,7 +104,7 @@ public class EmpresaApplicationService {
 
         this.empresaRepository.save(empresa);
         this.movimentacaoRepository.save(Movimentacao.builder()
-                .id(MovimentacaoId.generate())
+                .id(Movimentacao.generate())
                 .contaId(empresa.getContaId())
                 .empresaId(empresa.getId())
                 .dataHora(LocalDateTime.now())

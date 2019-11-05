@@ -1,7 +1,5 @@
 package com.totvs.tj.tcc.app.movimentacao;
 
-import com.totvs.tj.tcc.domain.empresa.EmpresaId;
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,6 +7,6 @@ import lombok.Data;
 @Builder
 public class ConsultaMovimentacaoPorEmpresalCommand {
     
-    private EmpresaId empresaId;
+    private String empresaId;
     
 }

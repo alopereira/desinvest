@@ -2,15 +2,18 @@ package com.totvs.tj.tcc.domain.empresa;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import java.util.UUID;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import com.totvs.tj.tcc.domain.conta.Conta;
-import com.totvs.tj.tcc.domain.conta.ContaId;
 import com.totvs.tj.tcc.domain.emprestimo.Emprestimo;
-import com.totvs.tj.tcc.domain.emprestimo.EmprestimoId;
 import com.totvs.tj.tcc.domain.emprestimo.EmprestimoSituacao;
-import com.totvs.tj.tcc.domain.responsavel.ResponsavelId;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,13 +25,16 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor(access = PRIVATE)
 @Entity
+@Table(name = "empresa")
 public class Empresa {
 
     @Id
-    private EmpresaId id;
+    private String id;
 
-    private ResponsavelId responsaveId;
+    private String responsaveId;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "conta_id", referencedColumnName = "id")
     private Conta conta;
 
     private double valor;
@@ -40,6 +46,10 @@ public class Empresa {
     private int solicitacaoAumentoCredito;
 
     private Situacao situacao;
+    
+    public static String generate() {
+        return UUID.randomUUID().toString();
+    }
 
     protected double calculaLimiteParaAberturaConta() {
 
@@ -88,7 +98,7 @@ public class Empresa {
         }
 
         return Emprestimo.builder()
-                .id(EmprestimoId.generate())
+                .id(Emprestimo.generate())
                 .empresaId(this.id)
                 .situacao(situacao)
                 .valor(valor)
@@ -112,7 +122,7 @@ public class Empresa {
     public void abrirConta() {
 
         Conta conta = Conta.builder()
-                .id(ContaId.generate())
+                .id(Conta.generate())
                 .saldo(0)
                 .limite(this.calculaLimiteParaAberturaConta())
                 .build();
@@ -120,7 +130,7 @@ public class Empresa {
         this.conta = conta;
     }
 
-    public ContaId getContaId() {
+    public String getContaId() {
         if (this.conta != null) {
             return this.conta.getId();
         }
